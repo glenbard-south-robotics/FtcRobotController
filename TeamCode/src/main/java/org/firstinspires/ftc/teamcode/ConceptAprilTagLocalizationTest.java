@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -148,13 +149,17 @@ public class ConceptAprilTagLocalizationTest extends LinearOpMode {
         aprilTag = new AprilTagProcessor.Builder()
 
                 // The following default settings are available to un-comment and edit as needed.
-                .setDrawAxes(false)
-                .setDrawCubeProjection(true)
-                .setDrawTagOutline(false)
+                //.setDrawAxes(false)
+                //.setDrawCubeProjection(true)
+                //.setDrawTagOutline(false)
                 //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                 //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
                 //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-                .setCameraPose(cameraPosition, cameraOrientation)
+                //.setCameraPose(cameraPosition, cameraOrientation)
+
+                .setDrawCubeProjection(true)
+                .setTagLibrary(AprilTagGameDatabase.getIntoTheDeepTagLibrary())
+                .setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
 
                 // == CAMERA CALIBRATION ==
                 // If you do not manually specify calibration parameters, the SDK will attempt
