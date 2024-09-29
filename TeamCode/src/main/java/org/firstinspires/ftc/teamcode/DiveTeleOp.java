@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //This class is meant to be a way to understand possible strategies for creating our own op mode
 
 //This is a test for pull requests
-@TeleOp(name="Practice TeleOp", group = "Practice")
-public class PracticeTeleOp extends LinearOpMode {
+@TeleOp(name="DiveTeleOp")
+public class DiveTeleOp extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -20,6 +20,7 @@ public class PracticeTeleOp extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
+    private CRServo grabberServo = null;
 
     @Override
     public void runOpMode() {
@@ -30,6 +31,7 @@ public class PracticeTeleOp extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        grabberServo = hardwareMap.get(CRServo.class, "grabberServo");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -106,6 +108,7 @@ public class PracticeTeleOp extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
+            grabberServo.setPower(speed);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
