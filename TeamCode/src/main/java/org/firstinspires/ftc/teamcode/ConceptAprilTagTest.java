@@ -170,7 +170,7 @@ public class ConceptAprilTagTest extends LinearOpMode {
         //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
         // Choose whether or not LiveView stops if no processors are enabled.
-        // If set "true", monitor shows solid orange screen if no processors enabled.
+        // If set "sfd'lOB:'dlvbl/sdvb vrue", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
         //builder.setAutoStopLiveView(false);
 
