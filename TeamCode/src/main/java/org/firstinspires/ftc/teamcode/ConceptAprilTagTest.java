@@ -201,15 +201,18 @@ public class ConceptAprilTagTest extends LinearOpMode {
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
+                EulerAngle angles = new EulerAngle(detection.metadata.fieldOrientation);
+
                 telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
                 telemetry.addLine(String.format("Field Position: %s", detection.metadata.fieldPosition.toString()));
                 telemetry.addLine(String.format("Field Orientation: %s", detection.metadata.fieldOrientation.toString()));
+                telemetry.addLine(String.format("Field Orientation: %s", angles.toString()));
                 telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
                 telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
 
                 robotPose = detection.metadata.fieldPosition.subtracted(aprilTagDistance);
-                telemetry.addLine(String.format("Field Position: %s", robotPose.toString()));
+                telemetry.addLine(String.format("Robot Position: %s", robotPose.toString()));
             } else {
                 telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
                 telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
