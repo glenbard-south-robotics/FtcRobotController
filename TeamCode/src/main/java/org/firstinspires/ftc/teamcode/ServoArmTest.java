@@ -8,38 +8,36 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "TestArmServos", group = "Practice")
 public class ServoArmTest extends LinearOpMode {
 
-    static final double INCREMENT   = 0.01;     // amount to slew servo each CYCLE_MS cycle
-    static final int    CYCLE_MS    =   50;     // period of each cycle
-    static final double MAX_POS     =  1.0;     // Maximum rotational position
-    static final double MIN_POS     =  -1.0;     // Minimum rotational position
+    static final double INCREMENT = 0.01;
+    static final int CYCLE_MS = 50;
+    static final double MAX_POS = 1.0;
+    static final double MIN_POS = 0;
 
-    // Define class members
-    //    Servo servo;
+    public static double ARM_HAND_LEFT_POWER = 0;
+    public static double ARM_HAND_RIGHT_POWER = 0;
 
     @Override
     public void runOpMode() {
 
-        // Connect to servo (Assume Robot Left Hand)
-        // Change the text in quotes to match any servo name on your robot.
         CRServo armHandLeft = hardwareMap.get(CRServo.class, "arm_hand_left");
         CRServo armHandRight = hardwareMap.get(CRServo.class, "arm_hand_right");
 
-        // Wait for the start button
         waitForStart();
 
+        while (opModeIsActive()) {
 
-        // Scan servo till stop pressed.
-        while(opModeIsActive()){
+            if (ARM_HAND_LEFT_POWER > MAX_POS) {
+                ARM_HAND_LEFT_POWER -= INCREMENT;
+                armHandLeft.setPower(ARM_HAND_LEFT_POWER);
+                armHandRight.setPower(-ARM_HAND_LEFT_POWER);
+            } else if (ARM_HAND_LEFT_POWER < MIN_POS) {
+                ARM_HAND_LEFT_POWER += INCREMENT;
+                armHandLeft.setPower(ARM_HAND_LEFT_POWER);
+                armHandRight.setPower(-ARM_HAND_LEFT_POWER);
+            } else {
+                ARM_HAND_LEFT_POWER = 0;
+            }
 
-
-
-            // Display the current value
-            telemetry.addData("Servo Position", "%5.2f", position);
-            telemetry.addData(">", "Press Stop to end test." );
-            telemetry.update();
-
-            // Set the servo to the new position and pause;
-            armHandLeft.setPower(position);
             sleep(CYCLE_MS);
             idle();
         }
@@ -48,5 +46,6 @@ public class ServoArmTest extends LinearOpMode {
         telemetry.addData(">", "Done");
         telemetry.update();
     }
+
 
 }
