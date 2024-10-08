@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Disabled
 @TeleOp(name="RAIDER2", group="Linear OpMode")
 public class RAIDER2 extends LinearOpMode {
     //private Gyroscope imu;
