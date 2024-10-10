@@ -211,6 +211,7 @@ public class ConceptAprilTagTest extends LinearOpMode {
                 telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
                 telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
 
+                aprilTagDistance = new VectorF((float) detection.ftcPose.x, (float) detection.ftcPose.y, (float) detection.ftcPose.z);
                 robotPose = detection.metadata.fieldPosition.subtracted(aprilTagDistance);
                 telemetry.addLine(String.format("Robot Position: %s", robotPose.toString()));
             } else {
