@@ -145,6 +145,8 @@ public class ConceptAprilTagTest extends LinearOpMode {
 
                 .build();
 
+
+
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
         // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
@@ -174,7 +176,7 @@ public class ConceptAprilTagTest extends LinearOpMode {
         //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
 
         // Choose whether or not LiveView stops if no processors are enabled.
-        // If set "sfd'lOB:'dlvbl/sdvb vrue", monitor shows solid orange screen if no processors enabled.
+        // If set "true", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
         //builder.setAutoStopLiveView(false);
 
@@ -197,6 +199,7 @@ public class ConceptAprilTagTest extends LinearOpMode {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
+        //telemetry.addData("# AprilTag Info", currentDetections.toString());
 
         // Step through the list of detections and display info for each one.
         for (AprilTagDetection detection : currentDetections) {

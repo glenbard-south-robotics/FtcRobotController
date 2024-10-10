@@ -62,7 +62,6 @@ public class ConceptScanServo extends LinearOpMode {
     double  position = (MAX_POS - MIN_POS) / 2; // Start at halfway position
     boolean rampUp = true;
 
-
     @Override
     public void runOpMode() {
 
@@ -112,4 +111,5 @@ public class ConceptScanServo extends LinearOpMode {
         telemetry.addData(">", "Done");
         telemetry.update();
     }
+
 }
