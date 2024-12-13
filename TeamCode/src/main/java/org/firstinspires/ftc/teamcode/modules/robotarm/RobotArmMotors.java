@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.modules.robotarm;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
