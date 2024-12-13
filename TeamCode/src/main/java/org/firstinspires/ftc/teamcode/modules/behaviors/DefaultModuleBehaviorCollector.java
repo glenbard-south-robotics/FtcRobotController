@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior;
+package org.firstinspires.ftc.teamcode.modules.behaviors;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ public class DefaultModuleBehaviorCollector {
 
     /**
      * @name collect
-     * @description Collects all of the OnTick annotations.
+     * @description Collects all the OnTick annotations.
      */
-    public void collect(List<Class<?>> classes) {
+    public void collect(Class<?>... classes) {
         for (Class<?> clazz : classes) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(DefaultModuleBehavior.class)) {

@@ -1,29 +1,34 @@
-package org.firstinspires.ftc.teamcode.modules.robotarm;
+package org.firstinspires.ftc.teamcode.modules.robot;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.RobotModule;
+import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
+import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotArm
  * @description Takes in motors, and controller inputs and powers the respective motors.
- * @see RobotArmMotors
  */
 public class RobotArm implements RobotModule {
-    private final RobotArmMotors motors;
 
     // State machine variables.
     private boolean CLAW_OPEN = false;
+    // Motors
+    private final Servo CLAW_LEFT = hardwareMap.get(Servo.class, "claw_left");
+    private final Servo CLAW_RIGHT = hardwareMap.get(Servo.class, "claw_right");
+    private final DcMotorEx ARM_BASE = hardwareMap.get(DcMotorEx.class, "arm_base");
 
-    public RobotArm(RobotArmMotors motors) {
-        this.motors = motors;
+    public RobotArm() {
         this.setMotorPolicies();
     }
+
 
     @DefaultModuleBehavior
     public void defaultModuleBehavior() {
@@ -56,14 +61,14 @@ public class RobotArm implements RobotModule {
      */
     public void openCloseClaw() {
         // Ensure the motors exist before setting their position
-        if (this.motors.CLAW_RIGHT != null) {
-            this.motors.CLAW_RIGHT.setPosition(this.CLAW_OPEN ? 0 : 0.48);
+        if (this.CLAW_RIGHT != null) {
+            this.CLAW_RIGHT.setPosition(this.CLAW_OPEN ? 0 : 0.48);
             CLAW_OPEN = !CLAW_OPEN;
         } else {
             throw new RuntimeException("CLAW_RIGHT is null!");
         }
-        if (this.motors.CLAW_LEFT != null) {
-            this.motors.CLAW_LEFT.setPosition(this.CLAW_OPEN ? 0 : 0.5);
+        if (this.CLAW_LEFT != null) {
+            this.CLAW_LEFT.setPosition(this.CLAW_OPEN ? 0 : 0.5);
             CLAW_OPEN = !CLAW_OPEN;
         } else {
             throw new RuntimeException("CLAW_LEFT is null!");
@@ -81,14 +86,14 @@ public class RobotArm implements RobotModule {
         clawLeft = CustomMathFunctions.clamp(0, clawLeft, 1);
 
         // Ensure the motors exist before setting their position
-        if (this.motors.CLAW_RIGHT != null) {
-            this.motors.CLAW_RIGHT.setPosition(clawRight);
+        if (this.CLAW_RIGHT != null) {
+            this.CLAW_RIGHT.setPosition(clawRight);
             CLAW_OPEN = !CLAW_OPEN;
         } else {
             throw new RuntimeException("CLAW_RIGHT is null!");
         }
-        if (this.motors.CLAW_LEFT != null) {
-            this.motors.CLAW_LEFT.setPosition(clawLeft);
+        if (this.CLAW_LEFT != null) {
+            this.CLAW_LEFT.setPosition(clawLeft);
             CLAW_OPEN = !CLAW_OPEN;
         } else {
             throw new RuntimeException("CLAW_LEFT is null!");
@@ -105,8 +110,8 @@ public class RobotArm implements RobotModule {
         basePower = CustomMathFunctions.clamp(0, basePower, 1);
 
         // Ensure the motor exists.
-        if (this.motors.ARM_BASE != null) {
-            this.motors.ARM_BASE.setPower(basePower);
+        if (this.ARM_BASE != null) {
+            this.ARM_BASE.setPower(basePower);
         } else {
             throw new RuntimeException("ARM_BASE is null!");
         }
@@ -117,7 +122,7 @@ public class RobotArm implements RobotModule {
      * @description Changes the default policies of each motor.
      */
     private void setMotorPolicies() {
-        this.motors.ARM_BASE.setDirection(DcMotor.Direction.REVERSE);
-        this.motors.ARM_BASE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.ARM_BASE.setDirection(DcMotor.Direction.REVERSE);
+        this.ARM_BASE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 }

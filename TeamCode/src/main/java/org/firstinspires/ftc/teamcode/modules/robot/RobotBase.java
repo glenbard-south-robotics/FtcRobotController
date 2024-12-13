@@ -1,24 +1,26 @@
-package org.firstinspires.ftc.teamcode.modules.robotbase;
+package org.firstinspires.ftc.teamcode.modules.robot;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.RobotModule;
+import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
+import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotBase
  * @description Takes in motors, and controller inputs and powers the respective motors.
- * @see RobotBaseMotors
  */
 public class RobotBase implements RobotModule {
-    private final RobotBaseMotors motors;
+    private final DcMotor LEFT_FRONT_DRIVE = hardwareMap.get(DcMotor.class, "left_front_drive");
+    private final DcMotor LEFT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "left_back_drive");
+    private final DcMotor RIGHT_FRONT_DRIVE = hardwareMap.get(DcMotor.class, "_front_drive");
+    private final DcMotor RIGHT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "right_back_drive");
 
-    public RobotBase(RobotBaseMotors motors) {
-        this.motors = motors;
+    public RobotBase() {
         this.setMotorPolicies();
     }
 
@@ -46,15 +48,15 @@ public class RobotBase implements RobotModule {
      * @description Changes the default policies of each motor.
      */
     private void setMotorPolicies() {
-        this.motors.LEFT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
-        this.motors.LEFT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
-        this.motors.RIGHT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
-        this.motors.RIGHT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
+        this.LEFT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
+        this.LEFT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
+        this.RIGHT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
+        this.RIGHT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
 
-        this.motors.LEFT_FRONT_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motors.LEFT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motors.RIGHT_FRONT_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.motors.RIGHT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.LEFT_FRONT_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.LEFT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.RIGHT_FRONT_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.RIGHT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
@@ -68,10 +70,10 @@ public class RobotBase implements RobotModule {
         rightFrontPower = CustomMathFunctions.clamp(0, rightFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
         rightBackPower = CustomMathFunctions.clamp(0, rightBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
 
-        this.motors.LEFT_FRONT_DRIVE.setPower(leftFrontPower);
-        this.motors.LEFT_BACK_DRIVE.setPower(leftBackPower);
-        this.motors.RIGHT_FRONT_DRIVE.setPower(rightFrontPower);
-        this.motors.RIGHT_BACK_DRIVE.setPower(rightBackPower);
+        this.LEFT_FRONT_DRIVE.setPower(leftFrontPower);
+        this.LEFT_BACK_DRIVE.setPower(leftBackPower);
+        this.RIGHT_FRONT_DRIVE.setPower(rightFrontPower);
+        this.RIGHT_BACK_DRIVE.setPower(rightBackPower);
     }
 
 }
