@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules;
+package org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

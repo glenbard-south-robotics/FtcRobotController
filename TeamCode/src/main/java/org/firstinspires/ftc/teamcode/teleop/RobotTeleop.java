@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.modules.DefaultModuleBehaviorCollector;
+import org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior.DefaultModuleBehaviorCollector;
 import org.firstinspires.ftc.teamcode.modules.robotarm.RobotArm;
 import org.firstinspires.ftc.teamcode.modules.robotarm.RobotArmMotors;
 import org.firstinspires.ftc.teamcode.modules.robotbase.RobotBase;
@@ -21,10 +21,6 @@ public class RobotTeleop extends LinearOpMode {
 
     private final DefaultModuleBehaviorCollector defaultModuleBehaviorCollector = new DefaultModuleBehaviorCollector();
     private final ArrayList<Class<?>> classes = new ArrayList<>();
-
-    private RobotBase base = null;
-    private RobotLinearSlide slide = null;
-    private RobotArm arm = null;
 
     @Override
     public void runOpMode() {
@@ -47,9 +43,9 @@ public class RobotTeleop extends LinearOpMode {
 
         DcMotorEx linearSlide = hardwareMap.get(DcMotorEx.class, "linear_slide");
 
-        base = new RobotBase(new RobotBaseMotors(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive));
-        arm = new RobotArm(new RobotArmMotors(armClawLeft, armClawRight, armBase));
-        slide = new RobotLinearSlide(new RobotLinearSlideMotors(linearSlide));
+        RobotBase base = new RobotBase(new RobotBaseMotors(leftFrontDrive, leftBackDrive, rightFrontDrive, rightBackDrive));
+        RobotArm arm = new RobotArm(new RobotArmMotors(armClawLeft, armClawRight, armBase));
+        RobotLinearSlide slide = new RobotLinearSlide(new RobotLinearSlideMotors(linearSlide));
 
         waitForStart();
         while (opModeIsActive()) {
