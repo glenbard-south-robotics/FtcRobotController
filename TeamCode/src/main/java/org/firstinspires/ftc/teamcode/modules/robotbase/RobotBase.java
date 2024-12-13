@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.modules.robotbase;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
@@ -16,7 +15,7 @@ import org.firstinspires.ftc.teamcode.modules.RobotModule;
  * @see RobotBaseMotors
  */
 public class RobotBase implements RobotModule {
-    private RobotBaseMotors motors = null;
+    private final RobotBaseMotors motors;
 
     public RobotBase(RobotBaseMotors motors) {
         this.motors = motors;

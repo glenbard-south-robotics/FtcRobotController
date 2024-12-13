@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gam
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
 import org.firstinspires.ftc.teamcode.modules.DefaultModuleBehavior;
 import org.firstinspires.ftc.teamcode.modules.RobotModule;
@@ -32,7 +33,7 @@ public class RobotLinearSlide implements RobotModule {
      * Throws a <b>RuntimeException</b> if any of the motors are null.
      */
     void setPosition(float position) {
-        position = CustomMathFunctions.clamp(0, position, 1);
+        position = CustomMathFunctions.clamp(0, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
         if (this.motors.LINEAR_SLIDE_MOTOR != null) {
             this.motors.LINEAR_SLIDE_MOTOR.setPower(position);
         } else {
