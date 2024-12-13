@@ -1,24 +1,23 @@
-package org.firstinspires.ftc.teamcode.modules.robotlinearslide;
+package org.firstinspires.ftc.teamcode.modules.robot;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.RobotModule;
+import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
+import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotLinearSlide
  * @description Takes in motors, and controller inputs and powers the respective slide motor.
- * @see RobotLinearSlideMotors
  */
 public class RobotLinearSlide implements RobotModule {
-    private final RobotLinearSlideMotors motors;
+    private final DcMotorEx LINEAR_SLIDE_MOTOR = hardwareMap.get(DcMotorEx.class, "linear_slide");
 
-    public RobotLinearSlide(RobotLinearSlideMotors motors) {
-        this.motors = motors;
+    public RobotLinearSlide() {
         this.setMotorPolicies();
     }
 
@@ -34,8 +33,8 @@ public class RobotLinearSlide implements RobotModule {
      */
     void setPosition(float position) {
         position = CustomMathFunctions.clamp(0, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
-        if (this.motors.LINEAR_SLIDE_MOTOR != null) {
-            this.motors.LINEAR_SLIDE_MOTOR.setPower(position);
+        if (this.LINEAR_SLIDE_MOTOR != null) {
+            this.LINEAR_SLIDE_MOTOR.setPower(position);
         } else {
             throw new RuntimeException("LINEAR_SLIDE_MOTOR is null!");
         }
@@ -46,7 +45,7 @@ public class RobotLinearSlide implements RobotModule {
      * @description Changes the default policies of each motor.
      */
     private void setMotorPolicies() {
-        this.motors.LINEAR_SLIDE_MOTOR.setDirection(DcMotor.Direction.FORWARD);
-        this.motors.LINEAR_SLIDE_MOTOR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.LINEAR_SLIDE_MOTOR.setDirection(DcMotorEx.Direction.FORWARD);
+        this.LINEAR_SLIDE_MOTOR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 }

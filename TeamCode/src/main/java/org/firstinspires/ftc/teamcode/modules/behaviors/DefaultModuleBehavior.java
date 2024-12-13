@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior;
+package org.firstinspires.ftc.teamcode.modules.behaviors;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

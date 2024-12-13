@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules;
+package org.firstinspires.ftc.teamcode.modules.robot;
 
 import androidx.annotation.ColorInt;
 
@@ -7,6 +7,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 /**
  * @name Led
  * @description Changes the color of the onboard lights to a specified color.
+ * @noinspection unused
  */
 public class Lynx {
     private LynxModule MASTER = null;
