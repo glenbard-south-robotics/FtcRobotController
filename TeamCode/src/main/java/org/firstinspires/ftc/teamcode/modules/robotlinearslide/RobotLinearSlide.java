@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.DefaultModuleBehavior;
+import org.firstinspires.ftc.teamcode.modules.defaultmodulebehavior.DefaultModuleBehavior;
 import org.firstinspires.ftc.teamcode.modules.RobotModule;
 
 /**
