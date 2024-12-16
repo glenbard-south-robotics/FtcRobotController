@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @name OnTickCollector
- * @description Collects all methods with the OnTick annotation.
+ * @name DefaultModuleBehaviorCollector
+ * @description Collects all methods with the DefaultModuleBehavior annotation.
  * @see DefaultModuleBehavior
  */
 public class DefaultModuleBehaviorCollector {
@@ -17,7 +17,7 @@ public class DefaultModuleBehaviorCollector {
 
     /**
      * @name collect
-     * @description Collects all the OnTick annotations.
+     * @description Collects all the DefaultModuleBehavior annotations.
      */
     public void collect(Class<?>... classes) {
         for (Class<?> clazz : classes) {

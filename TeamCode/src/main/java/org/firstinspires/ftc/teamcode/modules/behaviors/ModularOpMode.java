@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.behaviors;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 public abstract class ModularOpMode extends LinearOpMode {
 
     private final DefaultModuleBehaviorCollector collector = new DefaultModuleBehaviorCollector();
