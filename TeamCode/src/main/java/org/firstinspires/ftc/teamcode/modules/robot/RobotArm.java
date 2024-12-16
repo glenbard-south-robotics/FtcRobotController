@@ -14,7 +14,9 @@ import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotArm
- * @description Takes in motors, and controller inputs and powers the respective motors.
+ * @description This class controls the motors found on the robot using human input.
+ * @implNote This is automatically called by DefaultModuleBehaviorCollector.
+ * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
 public class RobotArm implements RobotModule {
 

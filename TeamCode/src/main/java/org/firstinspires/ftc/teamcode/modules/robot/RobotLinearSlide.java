@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotLinearSlide
- * @description Takes in motors, and controller inputs and powers the respective slide motor.
+ * @description This class controls the motors found on the robot using human input.
+ * @implNote This is automatically called by DefaultModuleBehaviorCollector.
+ * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
 public class RobotLinearSlide implements RobotModule {
     private final DcMotorEx LINEAR_SLIDE_MOTOR = hardwareMap.get(DcMotorEx.class, "linear_slide");
@@ -31,7 +33,7 @@ public class RobotLinearSlide implements RobotModule {
      * @description Sets the power of the linear slide servo. <br/>
      * Throws a <b>RuntimeException</b> if any of the motors are null.
      */
-    void setPosition(float position) {
+    public void setPosition(float position) {
         position = CustomMathFunctions.clamp(0, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
         if (this.LINEAR_SLIDE_MOTOR != null) {
             this.LINEAR_SLIDE_MOTOR.setPower(position);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.behaviors;
 
+import android.util.Pair;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.List;
  */
 public class DefaultModuleBehaviorCollector {
     private final List<Method> collectedMethods = new ArrayList<>();
+    private final List<Pair<Method, Object>> instances = new ArrayList<>();
 
     /**
      * @name collect
@@ -24,6 +27,25 @@ public class DefaultModuleBehaviorCollector {
                 }
             }
         }
+
+        createInstances();
+    }
+
+    /**
+     * @name createInstances
+     * @description Creates classes for each robot component.
+     * @see DefaultModuleBehaviorCollector#collect(Class[])
+     */
+    private void createInstances() {
+        for (Method method : collectedMethods) {
+            Object instance;
+            try {
+                instance = method.getDeclaringClass().getDeclaredConstructor().newInstance();
+                this.instances.add(new Pair<>(method, instance));
+            } catch (Exception e) {
+                System.err.println("Failed to create a new class: " + e.getMessage());
+            }
+        }
     }
 
     /**
@@ -31,15 +53,23 @@ public class DefaultModuleBehaviorCollector {
      * @description Executes all collected methods.
      */
     public void executeAll() {
-        for (Method method : collectedMethods) {
+
+        for (Pair<Method, Object> instance : instances) {
             try {
-                // Dynamically instantiate the class containing the method
-                Object instance = method.getDeclaringClass().getDeclaredConstructor().newInstance();
-                method.setAccessible(true); // Ensure private methods can be invoked
-                method.invoke(instance);
+                instance.first.setAccessible(true); // Ensure private methods can be invoked
+                instance.first.invoke(instance);
+                instances.add(instance);
             } catch (Exception e) {
-                System.err.println("Failed to execute method " + method.getName() + ": " + e.getMessage());
+                System.err.println("Failed to execute method " + instance.first.getName() + ": " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * @name getInstances()
+     * @description Returns all collected instances.
+     */
+    public ArrayList<Pair<Method, Object>> getInstances() {
+        return (ArrayList<Pair<Method, Object>>) this.instances;
     }
 }
