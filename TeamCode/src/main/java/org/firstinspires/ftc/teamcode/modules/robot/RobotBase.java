@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotBase
- * @description Takes in motors, and controller inputs and powers the respective motors.
+ * @description This class controls the motors found on the robot using human input.
+ * @implNote This is automatically called by DefaultModuleBehaviorCollector.
+ * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
 public class RobotBase implements RobotModule {
     private final DcMotor LEFT_FRONT_DRIVE = hardwareMap.get(DcMotor.class, "left_front_drive");
@@ -75,5 +77,4 @@ public class RobotBase implements RobotModule {
         this.RIGHT_FRONT_DRIVE.setPower(rightFrontPower);
         this.RIGHT_BACK_DRIVE.setPower(rightBackPower);
     }
-
 }
