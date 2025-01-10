@@ -1,39 +1,40 @@
 package org.firstinspires.ftc.teamcode.modules.robot;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotArm
  * @description This class controls the motors found on the robot using human input.
- * @implNote This is automatically called by DefaultModuleBehaviorCollector.
- * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
-public class RobotArm implements RobotModule {
+public class RobotArm {
 
     // State machine variables.
     private boolean CLAW_OPEN = false;
     // Motors
-    private final Servo CLAW_LEFT = hardwareMap.get(Servo.class, "claw_left");
-    private final Servo CLAW_RIGHT = hardwareMap.get(Servo.class, "claw_right");
-    private final DcMotorEx ARM_BASE = hardwareMap.get(DcMotorEx.class, "arm_base");
+    private final Servo CLAW_LEFT;
+    private final Servo CLAW_RIGHT;
+    private final DcMotorEx ARM_BASE;
 
-    public RobotArm() {
+    public RobotArm(@NonNull HardwareMap map) {
+        this.CLAW_LEFT = map.get(Servo.class, "claw_left");
+        this.CLAW_RIGHT = map.get(Servo.class, "claw_right");
+        this.ARM_BASE = map.get(DcMotorEx.class, "arm_base");
+
         this.setMotorPolicies();
     }
 
-
-    @DefaultModuleBehavior
-    public void defaultModuleBehavior() {
+    public void run() {
         if (gamepad2.a) {
             this.openCloseClaw();
         }
@@ -51,9 +52,11 @@ public class RobotArm implements RobotModule {
         // Set the power of the base motor
         if (gamepad2.right_stick_y >= GlobalConstants.ARM_ANALOG_BASE_THRESHOLD) {
             this.setBasePower(gamepad2.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
-        } else {
+        } /*else {
             this.setBasePower(GlobalConstants.ARM_GRAVITY_DIFFERENTIAL);
-        }
+        }*/
+
+        telemetry.addData("Arm Power", gamepad2.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
     }
 
     /**

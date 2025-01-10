@@ -12,4 +12,7 @@ public class GlobalConstants {
     public static float BASE_SENSITIVITY = 0.5f;
     // Linear Slide constants
     public static float LINEAR_SLIDE_SENSITIVITY = 0.75f;
+    // OpenCV constants
+    public static float CANNY_THRESHOLD_ONE = 100f;
+    public static float CANNY_THRESHOLD_TWO = 200f;
 }

@@ -3,31 +3,33 @@ package org.firstinspires.ftc.teamcode.modules.robot;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotBase
  * @description This class controls the motors found on the robot using human input.
- * @implNote This is automatically called by DefaultModuleBehaviorCollector.
- * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
-public class RobotBase implements RobotModule {
-    private final DcMotor LEFT_FRONT_DRIVE = hardwareMap.get(DcMotor.class, "left_front_drive");
-    private final DcMotor LEFT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "left_back_drive");
-    private final DcMotor RIGHT_FRONT_DRIVE = hardwareMap.get(DcMotor.class, "_front_drive");
-    private final DcMotor RIGHT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "right_back_drive");
+public class RobotBase {
+    private final DcMotor LEFT_FRONT_DRIVE;
+    private final DcMotor LEFT_BACK_DRIVE;
+    private final DcMotor RIGHT_FRONT_DRIVE;
+    private final DcMotor RIGHT_BACK_DRIVE;
 
-    public RobotBase() {
+    public RobotBase(@NonNull HardwareMap map) {
+        this.LEFT_FRONT_DRIVE = map.get(DcMotor.class, "left_front_drive");
+        this.LEFT_BACK_DRIVE = map.get(DcMotor.class, "left_back_drive");
+        this.RIGHT_FRONT_DRIVE = map.get(DcMotor.class, "right_front_drive");
+        this.RIGHT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "right_back_drive");
         this.setMotorPolicies();
     }
 
-    @DefaultModuleBehavior
-    public void defaultModuleBehavior() {
+    public void run() {
         float axial = -gamepad1.left_stick_y;
         float lateral = gamepad1.left_stick_x;
         float yaw = gamepad1.right_stick_x;

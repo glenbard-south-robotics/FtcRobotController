@@ -1,31 +1,33 @@
 package org.firstinspires.ftc.teamcode.modules.robot;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
-import org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehavior;
-import org.firstinspires.ftc.teamcode.modules.behaviors.RobotModule;
 
 /**
  * @name RobotLinearSlide
  * @description This class controls the motors found on the robot using human input.
- * @implNote This is automatically called by DefaultModuleBehaviorCollector.
- * @see org.firstinspires.ftc.teamcode.modules.behaviors.DefaultModuleBehaviorCollector
  */
-public class RobotLinearSlide implements RobotModule {
-    private final DcMotorEx LINEAR_SLIDE_MOTOR = hardwareMap.get(DcMotorEx.class, "linear_slide");
+public class RobotLinearSlide {
+    private final DcMotorEx LINEAR_SLIDE_MOTOR;
 
-    public RobotLinearSlide() {
+    public RobotLinearSlide(@NonNull HardwareMap map) {
+        this.LINEAR_SLIDE_MOTOR = map.get(DcMotorEx.class, "linear_slide");
         this.setMotorPolicies();
     }
 
-    @DefaultModuleBehavior
-    public void defaultModuleBehavior() {
+    public void run() {
+        telemetry.addLine("Linear Slide running!");
         this.setPosition(Math.abs(gamepad2.left_stick_y));
+        telemetry.addData("Linear Slide Power", Math.abs(gamepad2.left_stick_y));
+        telemetry.update();
     }
 
     /**
