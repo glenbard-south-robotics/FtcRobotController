@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.modules.robot.RobotLinearSlide;
 public class RobotTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
-        RobotArm arm = new RobotArm(hardwareMap);
-        RobotBase base = new RobotBase(hardwareMap);
-        RobotLinearSlide slide = new RobotLinearSlide(hardwareMap);
+        RobotArm arm = new RobotArm(hardwareMap, gamepad2);
+        RobotBase base = new RobotBase(hardwareMap, gamepad1, gamepad2);
+        RobotLinearSlide slide = new RobotLinearSlide(hardwareMap, gamepad2);
 
         waitForStart();
         while (opModeIsActive()) {

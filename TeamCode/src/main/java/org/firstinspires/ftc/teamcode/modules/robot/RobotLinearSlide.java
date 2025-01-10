@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.modules.robot;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
@@ -17,30 +15,36 @@ import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
  */
 public class RobotLinearSlide {
     private final DcMotorEx LINEAR_SLIDE_MOTOR;
+    private final DcMotorEx LINEAR_SLIDE_MOTOR_2;
+    private final Gamepad gamepadTwo;
 
-    public RobotLinearSlide(@NonNull HardwareMap map) {
+    public RobotLinearSlide(@NonNull HardwareMap map, @NonNull Gamepad gamepadTwo) {
         this.LINEAR_SLIDE_MOTOR = map.get(DcMotorEx.class, "linear_slide");
+        this.LINEAR_SLIDE_MOTOR_2 = map.get(DcMotorEx.class, "linear_slide_2");
+        this.gamepadTwo = gamepadTwo;
         this.setMotorPolicies();
     }
 
     public void run() {
-        telemetry.addLine("Linear Slide running!");
-        this.setPosition(Math.abs(gamepad2.left_stick_y));
-        telemetry.addData("Linear Slide Power", Math.abs(gamepad2.left_stick_y));
-        telemetry.update();
+        this.setPower(gamepadTwo.left_stick_y);
+        this.setPowerAuxillary(gamepadTwo.left_stick_x);
     }
 
-    /**
-     * @name setPosition
-     * @description Sets the power of the linear slide servo. <br/>
-     * Throws a <b>RuntimeException</b> if any of the motors are null.
-     */
-    public void setPosition(float position) {
-        position = CustomMathFunctions.clamp(0, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
+    public void setPower(float position) {
+        position = CustomMathFunctions.clamp(-1, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
         if (this.LINEAR_SLIDE_MOTOR != null) {
             this.LINEAR_SLIDE_MOTOR.setPower(position);
         } else {
             throw new RuntimeException("LINEAR_SLIDE_MOTOR is null!");
+        }
+    }
+
+    public void setPowerAuxillary(float position) {
+        position = CustomMathFunctions.clamp(-1, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
+        if (this.LINEAR_SLIDE_MOTOR_2 != null) {
+            this.LINEAR_SLIDE_MOTOR_2.setPower(position);
+        } else {
+            throw new RuntimeException("LINEAR_SLIDE_MOTOR_2 is null!");
         }
     }
 
@@ -51,5 +55,7 @@ public class RobotLinearSlide {
     private void setMotorPolicies() {
         this.LINEAR_SLIDE_MOTOR.setDirection(DcMotorEx.Direction.FORWARD);
         this.LINEAR_SLIDE_MOTOR.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        this.LINEAR_SLIDE_MOTOR_2.setDirection(DcMotorEx.Direction.FORWARD);
+        this.LINEAR_SLIDE_MOTOR_2.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 }

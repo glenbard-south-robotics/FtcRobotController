@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.modules.robot;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
@@ -21,18 +21,27 @@ public class RobotBase {
     private final DcMotor RIGHT_FRONT_DRIVE;
     private final DcMotor RIGHT_BACK_DRIVE;
 
-    public RobotBase(@NonNull HardwareMap map) {
+    private final Servo LANDING_GEAR;
+
+    private final Gamepad gamepadOne, gamepadTwo;
+
+    public RobotBase(@NonNull HardwareMap map, @NonNull Gamepad gamepadOne, Gamepad gamepadTwo) {
         this.LEFT_FRONT_DRIVE = map.get(DcMotor.class, "left_front_drive");
         this.LEFT_BACK_DRIVE = map.get(DcMotor.class, "left_back_drive");
         this.RIGHT_FRONT_DRIVE = map.get(DcMotor.class, "right_front_drive");
-        this.RIGHT_BACK_DRIVE = hardwareMap.get(DcMotor.class, "right_back_drive");
+        this.RIGHT_BACK_DRIVE = map.get(DcMotor.class, "right_back_drive");
+
+        this.LANDING_GEAR = map.get(Servo.class, "landing_gear");
+
+        this.gamepadOne = gamepadOne;
+        this.gamepadTwo = gamepadTwo;
         this.setMotorPolicies();
     }
 
     public void run() {
-        float axial = -gamepad1.left_stick_y;
-        float lateral = gamepad1.left_stick_x;
-        float yaw = gamepad1.right_stick_x;
+        float axial = -gamepadOne.left_stick_y;
+        float lateral = gamepadOne.left_stick_x;
+        float yaw = gamepadOne.right_stick_x;
 
         float leftFrontPower = axial + lateral + yaw;
         float leftBackPower = axial - lateral + yaw;
@@ -45,6 +54,14 @@ public class RobotBase {
                 rightFrontPower,
                 rightBackPower
         );
+
+        if (gamepadTwo.left_bumper) {
+            this.setLandingGear(1);
+        }
+
+        if (gamepadTwo.right_bumper) {
+            this.setLandingGear(0);
+        }
     }
 
     /**
@@ -52,7 +69,7 @@ public class RobotBase {
      * @description Changes the default policies of each motor.
      */
     private void setMotorPolicies() {
-        this.LEFT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
+        this.LEFT_FRONT_DRIVE.setDirection(DcMotor.Direction.FORWARD);
         this.LEFT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
         this.RIGHT_FRONT_DRIVE.setDirection(DcMotor.Direction.REVERSE);
         this.RIGHT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
@@ -69,14 +86,18 @@ public class RobotBase {
      * Throws a <b>RuntimeException</b> if any of the motors are null.
      */
     public void setMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
-        leftFrontPower = CustomMathFunctions.clamp(0, leftFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        leftBackPower = CustomMathFunctions.clamp(0, leftBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        rightFrontPower = CustomMathFunctions.clamp(0, rightFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        rightBackPower = CustomMathFunctions.clamp(0, rightBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
+        leftFrontPower = CustomMathFunctions.clamp(-1, leftFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
+        leftBackPower = CustomMathFunctions.clamp(-1, leftBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
+        rightFrontPower = CustomMathFunctions.clamp(-1, rightFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
+        rightBackPower = CustomMathFunctions.clamp(-1, rightBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
 
         this.LEFT_FRONT_DRIVE.setPower(leftFrontPower);
         this.LEFT_BACK_DRIVE.setPower(leftBackPower);
         this.RIGHT_FRONT_DRIVE.setPower(rightFrontPower);
         this.RIGHT_BACK_DRIVE.setPower(rightBackPower);
+    }
+
+    public void setLandingGear(float position) {
+        this.LANDING_GEAR.setPosition(position);
     }
 }
