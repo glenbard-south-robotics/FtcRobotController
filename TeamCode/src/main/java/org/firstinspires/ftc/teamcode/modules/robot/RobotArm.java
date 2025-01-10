@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.modules.robot;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import androidx.annotation.NonNull;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -24,39 +22,43 @@ public class RobotArm {
     // Motors
     private final Servo CLAW_LEFT;
     private final Servo CLAW_RIGHT;
-    private final DcMotorEx ARM_BASE;
+//    private final DcMotorEx ARM_BASE;
 
-    public RobotArm(@NonNull HardwareMap map) {
+    private final Gamepad gamepadTwo;
+
+    public RobotArm(@NonNull HardwareMap map, @NonNull Gamepad gamepadTwo) {
         this.CLAW_LEFT = map.get(Servo.class, "claw_left");
         this.CLAW_RIGHT = map.get(Servo.class, "claw_right");
-        this.ARM_BASE = map.get(DcMotorEx.class, "arm_base");
+//        this.ARM_BASE = map.get(DcMotorEx.class, "arm_base");
 
-        this.setMotorPolicies();
+        this.gamepadTwo = gamepadTwo;
+
+//        this.setMotorPolicies();
     }
 
     public void run() {
-        if (gamepad2.a) {
+        if (gamepadTwo.a) {
             this.openCloseClaw();
         }
 
         // Manually adjust the two claws on their own.
-        if (gamepad2.left_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD ||
-                gamepad2.right_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD
+        if (gamepadTwo.left_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD ||
+                gamepadTwo.right_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD
         ) {
             this.setClawsPosition(
-                    gamepad2.left_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY,
-                    gamepad2.right_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY
+                    gamepadTwo.left_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY,
+                    gamepadTwo.right_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY
             );
         }
 
         // Set the power of the base motor
-        if (gamepad2.right_stick_y >= GlobalConstants.ARM_ANALOG_BASE_THRESHOLD) {
-            this.setBasePower(gamepad2.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
+        if (gamepadTwo.right_stick_y >= GlobalConstants.ARM_ANALOG_BASE_THRESHOLD) {
+//            this.setBasePower(gamepadTwo.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
         } /*else {
             this.setBasePower(GlobalConstants.ARM_GRAVITY_DIFFERENTIAL);
         }*/
 
-        telemetry.addData("Arm Power", gamepad2.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
+//        telemetry.addData("Arm Power", gamepadTwo.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
     }
 
     /**
@@ -111,23 +113,23 @@ public class RobotArm {
      * @description Set the power of the base motor. <br/>
      * Throws a <b>RuntimeException</b> if any of the motors are null.
      */
-    public void setBasePower(float basePower) {
-        basePower = CustomMathFunctions.clamp(0, basePower, 1);
-
-        // Ensure the motor exists.
-        if (this.ARM_BASE != null) {
-            this.ARM_BASE.setPower(basePower);
-        } else {
-            throw new RuntimeException("ARM_BASE is null!");
-        }
-    }
+//    public void setBasePower(float basePower) {
+//        basePower = CustomMathFunctions.clamp(0, basePower, 1);
+//
+//        // Ensure the motor exists.
+//        if (this.ARM_BASE != null) {
+//            this.ARM_BASE.setPower(basePower);
+//        } else {
+//            throw new RuntimeException("ARM_BASE is null!");
+//        }
+//    }
 
     /**
      * @name setMotorPolicies()
      * @description Changes the default policies of each motor.
      */
-    private void setMotorPolicies() {
-        this.ARM_BASE.setDirection(DcMotor.Direction.REVERSE);
-        this.ARM_BASE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
+//    private void setMotorPolicies() {
+//        this.ARM_BASE.setDirection(DcMotor.Direction.REVERSE);
+//        this.ARM_BASE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//    }
 }

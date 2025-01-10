@@ -9,7 +9,7 @@ public class GlobalConstants {
     public static float ARM_BASE_SENSITIVITY = 0.5f;
     public static float ARM_GRAVITY_DIFFERENTIAL = 0.1f;
     // Base constants
-    public static float BASE_SENSITIVITY = 0.5f;
+    public static float BASE_SENSITIVITY = 100f;
     // Linear Slide constants
     public static float LINEAR_SLIDE_SENSITIVITY = 0.75f;
     // OpenCV constants
