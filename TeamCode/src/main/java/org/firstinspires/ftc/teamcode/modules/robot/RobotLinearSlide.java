@@ -27,7 +27,7 @@ public class RobotLinearSlide {
 
     public void run() {
         this.setPower(gamepadTwo.left_stick_y);
-        this.setPowerAuxillary(gamepadTwo.left_stick_x);
+        this.setPowerAuxiliary(gamepadTwo.left_stick_x);
     }
 
     public void setPower(float position) {
@@ -39,7 +39,7 @@ public class RobotLinearSlide {
         }
     }
 
-    public void setPowerAuxillary(float position) {
+    public void setPowerAuxiliary(float position) {
         position = CustomMathFunctions.clamp(-1, position * GlobalConstants.LINEAR_SLIDE_SENSITIVITY, 1);
         if (this.LINEAR_SLIDE_MOTOR_2 != null) {
             this.LINEAR_SLIDE_MOTOR_2.setPower(position);

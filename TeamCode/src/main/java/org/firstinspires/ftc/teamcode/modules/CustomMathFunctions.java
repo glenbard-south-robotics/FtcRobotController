@@ -8,4 +8,5 @@ public class CustomMathFunctions {
     public static float clamp(float small, float value, float big) {
         return Math.max(small, Math.min(big, value));
     }
+
 }
