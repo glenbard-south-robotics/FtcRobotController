@@ -56,10 +56,10 @@ public class RobotArm {
         }
     }
 
-    double CLAW_RIGHT_OPEN = 0.48;
-    double CLAW_RIGHT_CLOSED = 0;
+    double CLAW_RIGHT_OPEN = 0.50;
+    double CLAW_RIGHT_CLOSED = 0.1;
     double CLAW_LEFT_OPEN = 0;
-    double CLAW_LEFT_CLOSED = 0.5;
+    double CLAW_LEFT_CLOSED = 0.50;
 
     public void openClaw() {
         this.CLAW_RIGHT.setPosition(CLAW_RIGHT_OPEN);
@@ -71,28 +71,23 @@ public class RobotArm {
         this.CLAW_LEFT.setPosition(CLAW_LEFT_CLOSED);
     }
 
-    /**
-     * @name setClawsPosition()
-     * @description Set the position of each claw servo. <br/>
-     * Throws a <b>RuntimeException</b> if any of the motors are null.
-     */
-    public void setClawsPosition(float clawRight, float clawLeft) {
-        clawRight = CustomMathFunctions.clamp(0, clawRight, 1);
-        clawLeft = CustomMathFunctions.clamp(0, clawLeft, 1);
-
-        // Ensure the motors exist before setting their position
-        if (this.CLAW_RIGHT != null) {
-            this.CLAW_RIGHT.setPosition(clawRight);
-        } else {
-            throw new RuntimeException("CLAW_RIGHT is null!");
-        }
-        if (this.CLAW_LEFT != null) {
-            this.CLAW_LEFT.setPosition(clawLeft);
-        } else {
-            throw new RuntimeException("CLAW_LEFT is null!");
-        }
-
-    }
+//    public void setClawsPosition(float clawRight, float clawLeft) {
+//        clawRight = CustomMathFunctions.clamp(0, clawRight, 1);
+//        clawLeft = CustomMathFunctions.clamp(0, clawLeft, 1);
+//
+//        // Ensure the motors exist before setting their position
+//        if (this.CLAW_RIGHT != null) {
+//            this.CLAW_RIGHT.setPosition(clawRight);
+//        } else {
+//            throw new RuntimeException("CLAW_RIGHT is null!");
+//        }
+//        if (this.CLAW_LEFT != null) {
+//            this.CLAW_LEFT.setPosition(clawLeft);
+//        } else {
+//            throw new RuntimeException("CLAW_LEFT is null!");
+//        }
+//
+//    }
 
     /**
      * @name setBasePower()
