@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
@@ -21,17 +20,17 @@ public class RobotBase {
     private final DcMotor RIGHT_FRONT_DRIVE;
     private final DcMotor RIGHT_BACK_DRIVE;
 
-    private final Servo LANDING_GEAR;
+    private final DcMotor LANDING_GEAR;
 
     private final Gamepad gamepadOne, gamepadTwo;
 
-    public RobotBase(@NonNull HardwareMap map, @NonNull Gamepad gamepadOne, Gamepad gamepadTwo) {
+    public RobotBase(@NonNull HardwareMap map, @NonNull Gamepad gamepadOne, @NonNull Gamepad gamepadTwo) {
         this.LEFT_FRONT_DRIVE = map.get(DcMotor.class, "left_front_drive");
         this.LEFT_BACK_DRIVE = map.get(DcMotor.class, "left_back_drive");
         this.RIGHT_FRONT_DRIVE = map.get(DcMotor.class, "right_front_drive");
         this.RIGHT_BACK_DRIVE = map.get(DcMotor.class, "right_back_drive");
 
-        this.LANDING_GEAR = map.get(Servo.class, "landing_gear");
+        this.LANDING_GEAR = map.get(DcMotor.class, "landing_gear");
 
         this.gamepadOne = gamepadOne;
         this.gamepadTwo = gamepadTwo;
@@ -56,11 +55,11 @@ public class RobotBase {
         );
 
         if (gamepadTwo.left_bumper) {
-            this.setLandingGear(1);
+            this.setLandingGear(-1);
         }
 
         if (gamepadTwo.right_bumper) {
-            this.setLandingGear(0);
+            this.setLandingGear(1);
         }
     }
 
@@ -78,6 +77,9 @@ public class RobotBase {
         this.LEFT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.RIGHT_FRONT_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.RIGHT_BACK_DRIVE.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.LANDING_GEAR.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.LANDING_GEAR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
@@ -86,10 +88,13 @@ public class RobotBase {
      * Throws a <b>RuntimeException</b> if any of the motors are null.
      */
     public void setMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
-        leftFrontPower = CustomMathFunctions.clamp(-1, leftFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        leftBackPower = CustomMathFunctions.clamp(-1, leftBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        rightFrontPower = CustomMathFunctions.clamp(-1, rightFrontPower * GlobalConstants.BASE_SENSITIVITY, 1);
-        rightBackPower = CustomMathFunctions.clamp(-1, rightBackPower * GlobalConstants.BASE_SENSITIVITY, 1);
+        boolean slowModeActive = gamepadOne.y;
+        float speed = (slowModeActive ? GlobalConstants.BASE_SENSITIVITY_SLOW : GlobalConstants.BASE_SENSITIVITY);
+
+        leftFrontPower = CustomMathFunctions.clamp(-1, leftFrontPower * speed, 1);
+        leftBackPower = CustomMathFunctions.clamp(-1, leftBackPower * speed, 1);
+        rightFrontPower = CustomMathFunctions.clamp(-1, rightFrontPower * speed, 1);
+        rightBackPower = CustomMathFunctions.clamp(-1, rightBackPower * speed, 1);
 
         this.LEFT_FRONT_DRIVE.setPower(leftFrontPower);
         this.LEFT_BACK_DRIVE.setPower(leftBackPower);
@@ -97,7 +102,21 @@ public class RobotBase {
         this.RIGHT_BACK_DRIVE.setPower(rightBackPower);
     }
 
-    public void setLandingGear(float position) {
-        this.LANDING_GEAR.setPosition(position);
+    public void setMotorPowersCoordinates(float axial, float lateral, float yaw) {
+        float leftFrontPower = axial + lateral + yaw;
+        float leftBackPower = axial - lateral + yaw;
+        float rightFrontPower = axial - lateral - yaw;
+        float rightBackPower = axial + lateral - yaw;
+
+        setMotorPowers(
+                leftFrontPower,
+                leftBackPower,
+                rightFrontPower,
+                rightBackPower
+        );
+    }
+
+    public void setLandingGear(float power) {
+        this.LANDING_GEAR.setPower(power);
     }
 }
