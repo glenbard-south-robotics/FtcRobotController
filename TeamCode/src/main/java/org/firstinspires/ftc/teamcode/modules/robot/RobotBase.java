@@ -37,8 +37,6 @@ public class RobotBase {
         this.setMotorPolicies();
     }
 
-    boolean LANDING_GEAR_DOWN = false;
-
     public void run() {
         float axial = -gamepadOne.left_stick_y;
         float lateral = gamepadOne.left_stick_x;
@@ -56,15 +54,8 @@ public class RobotBase {
                 rightBackPower
         );
 
-        // Down
         if (gamepadTwo.x) {
-            if (LANDING_GEAR_DOWN) {
-                this.setLandingGear(1);
-                LANDING_GEAR_DOWN = false;
-            } else {
-                this.setLandingGear(-1);
-                LANDING_GEAR_DOWN = true;
-            }
+            this.setLandingGear(-1);
         }
     }
 

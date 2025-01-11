@@ -3,10 +3,13 @@ package org.firstinspires.ftc.teamcode.modules.robot;
 import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.FFlags;
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
 
@@ -18,14 +21,14 @@ public class RobotArm {
     // Motors
     private final Servo CLAW_LEFT;
     private final Servo CLAW_RIGHT;
-    private final DcMotor ARM_BASE;
+    private final DcMotorEx ARM_BASE;
 
     private final Gamepad gamepadTwo;
 
     public RobotArm(@NonNull HardwareMap map, @NonNull Gamepad gamepadTwo) {
         this.CLAW_LEFT = map.get(Servo.class, "claw_left");
         this.CLAW_RIGHT = map.get(Servo.class, "claw_right");
-        this.ARM_BASE = map.get(DcMotor.class, "arm_base");
+        this.ARM_BASE = map.get(DcMotorEx.class, "arm_base");
 
         this.gamepadTwo = gamepadTwo;
 
@@ -40,54 +43,53 @@ public class RobotArm {
             closeClaw();
         }
 
-        // Manually adjust the two claws on their own.
-        //if (gamepadTwo.left_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD ||
-        //       gamepadTwo.right_trigger > GlobalConstants.ARM_ANALOG_THRESHOLD
-        //) {
-        //   this.setClawsPosition(
-        //           gamepadTwo.right_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY,
-        //           gamepadTwo.left_trigger * GlobalConstants.ARM_CLAW_SENSITIVITY
-        //   );
-        //}
 
         // Set the power of the base motor
         if (Math.abs(gamepadTwo.right_stick_y) >= GlobalConstants.ARM_ANALOG_BASE_THRESHOLD) {
-            this.setBasePower(gamepadTwo.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY);
+            if (!FFlags.ARM_GRAVITY_COMPENSATION) {
+                boolean slowModeActive = gamepadTwo.y;
+                float speed = gamepadTwo.right_stick_y * (slowModeActive ? GlobalConstants.ARM_BASE_SENSITIVITY_SLOW : GlobalConstants.ARM_BASE_SENSITIVITY);
+
+                this.setBasePower(speed);
+            } else {
+                double velocity = this.ARM_BASE.getVelocity(AngleUnit.DEGREES);
+
+                // Desired speed in degrees per second.
+                float desiredVelocity = 18f;
+                float velocityDifference = (float) (desiredVelocity - velocity);
+
+                // The velocity difference being less than 0 means that the arm is too fast.
+                if (velocityDifference < 0) {
+                    float brakingCoefficient = CustomMathFunctions.clamp(-1, 0.5f * velocityDifference, 1);
+
+
+                    float speed = gamepadTwo.right_stick_y * GlobalConstants.ARM_BASE_SENSITIVITY;
+
+                    this.setBasePower(speed);
+                }
+            }
+
+            this.ARM_BASE.getVelocity();
         }
     }
 
-    double CLAW_RIGHT_OPEN = 0.50;
-    double CLAW_RIGHT_CLOSED = 0.1;
-    double CLAW_LEFT_OPEN = 0;
-    double CLAW_LEFT_CLOSED = 0.50;
+    //!FIXME Names are incorrect.
+    double CLAW_RIGHT_OPEN = 0.7; // closed
+    double CLAW_RIGHT_CLOSED = 0.1; // opens
+    double CLAW_LEFT_OPEN = 0; // closed
+    double CLAW_LEFT_CLOSED = 0.6; // opens
 
+    // A - closes
     public void openClaw() {
         this.CLAW_RIGHT.setPosition(CLAW_RIGHT_OPEN);
         this.CLAW_LEFT.setPosition(CLAW_LEFT_OPEN);
     }
 
+    // B - opens
     public void closeClaw() {
         this.CLAW_RIGHT.setPosition(CLAW_RIGHT_CLOSED);
         this.CLAW_LEFT.setPosition(CLAW_LEFT_CLOSED);
     }
-
-//    public void setClawsPosition(float clawRight, float clawLeft) {
-//        clawRight = CustomMathFunctions.clamp(0, clawRight, 1);
-//        clawLeft = CustomMathFunctions.clamp(0, clawLeft, 1);
-//
-//        // Ensure the motors exist before setting their position
-//        if (this.CLAW_RIGHT != null) {
-//            this.CLAW_RIGHT.setPosition(clawRight);
-//        } else {
-//            throw new RuntimeException("CLAW_RIGHT is null!");
-//        }
-//        if (this.CLAW_LEFT != null) {
-//            this.CLAW_LEFT.setPosition(clawLeft);
-//        } else {
-//            throw new RuntimeException("CLAW_LEFT is null!");
-//        }
-//
-//    }
 
     /**
      * @name setBasePower()
