@@ -10,10 +10,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.GlobalConstants;
 import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
 
-/**
- * @name RobotBase
- * @description This class controls the motors found on the robot using human input.
- */
 public class RobotBase {
     private final DcMotor LEFT_FRONT_DRIVE;
     private final DcMotor LEFT_BACK_DRIVE;
@@ -59,10 +55,6 @@ public class RobotBase {
         }
     }
 
-    /**
-     * @name setMotorPolicies()
-     * @description Changes the default policies of each motor.
-     */
     private void setMotorPolicies() {
         this.LEFT_FRONT_DRIVE.setDirection(DcMotor.Direction.FORWARD);
         this.LEFT_BACK_DRIVE.setDirection(DcMotor.Direction.FORWARD);
@@ -78,11 +70,6 @@ public class RobotBase {
         this.LANDING_GEAR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    /**
-     * @name setMotorPowers()
-     * @description Sets the power of all base motors. <br/>
-     * Throws a <b>RuntimeException</b> if any of the motors are null.
-     */
     public void setMotorPowers(float leftFrontPower, float leftBackPower, float rightFrontPower, float rightBackPower) {
         boolean slowModeActive = gamepadOne.y;
         float speed = (slowModeActive ? GlobalConstants.BASE_SENSITIVITY_SLOW : GlobalConstants.BASE_SENSITIVITY);
