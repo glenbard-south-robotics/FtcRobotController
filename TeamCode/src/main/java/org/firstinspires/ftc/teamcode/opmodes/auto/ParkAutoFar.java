@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
-import org.firstinspires.ftc.teamcode.modules.robot.RobotBase;
+import org.firstinspires.ftc.teamcode.modules.robot.deprecated.RobotBase;
 
 @Autonomous(name = "ParkAutoFar", group = "Auto")
 public class ParkAutoFar extends LinearOpMode {

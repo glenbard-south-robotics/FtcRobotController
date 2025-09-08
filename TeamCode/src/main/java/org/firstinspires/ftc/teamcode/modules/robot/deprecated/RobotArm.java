@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.robot;
+package org.firstinspires.ftc.teamcode.modules.robot.deprecated;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
-import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
 
 public class RobotArm {
     // Motors

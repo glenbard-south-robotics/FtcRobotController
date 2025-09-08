@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode
+package org.firstinspires.ftc.teamcode.modules
 
 abstract class GBSRobotModule(protected val context: GBSModuleContext) {
     open fun initialize(): Result<Unit> = Result.success(Unit)
