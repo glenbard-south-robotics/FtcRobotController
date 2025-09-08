@@ -6,6 +6,9 @@ import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 
 class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
+
+    private val WHEELS_INCHES_TO_TICKS = 140 / Math.PI
+
     private lateinit var leftDrive: DcMotor
     private lateinit var rightDrive: DcMotor
 
