@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules.robot;
+package org.firstinspires.ftc.teamcode.modules.robot.deprecated;
 
 import androidx.annotation.NonNull;
 
@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
-import org.firstinspires.ftc.teamcode.modules.CustomMathFunctions;
 
 public class RobotBase {
     private final DcMotor LEFT_FRONT_DRIVE;

@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.GlobalConstants;
-import org.firstinspires.ftc.teamcode.modules.robot.RobotArm;
-import org.firstinspires.ftc.teamcode.modules.robot.RobotBase;
-import org.firstinspires.ftc.teamcode.modules.robot.RobotLinearSlide;
+import org.firstinspires.ftc.teamcode.modules.robot.deprecated.RobotArm;
+import org.firstinspires.ftc.teamcode.modules.robot.deprecated.RobotBase;
+import org.firstinspires.ftc.teamcode.modules.robot.deprecated.RobotLinearSlide;
 
 @TeleOp(name = "RobotTeleop", group = "Teleop")
 public class RobotTeleop extends LinearOpMode {

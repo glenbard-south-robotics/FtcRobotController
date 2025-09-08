@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.modules;
+package org.firstinspires.ftc.teamcode.modules.robot.deprecated;
 
 public class CustomMathFunctions {
     /**

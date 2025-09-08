@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.modules
+package org.firstinspires.ftc.teamcode.modules.robot
 
-import org.firstinspires.ftc.teamcode.GBSModuleContext
-import org.firstinspires.ftc.teamcode.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 
 class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     override fun initialize(): Result<Unit> {
