@@ -10,14 +10,14 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 @TeleOp(name = "GBSTestTeleop", group = "Tests")
 class GBSTestTeleop : LinearOpMode() {
     override fun runOpMode() {
-        val context: GBSModuleContext = GBSModuleContext(
+        val context = GBSModuleContext(
             opMode = this,
             hardwareMap = this.hardwareMap,
             telemetry = this.telemetry,
             gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
         )
 
-        val base = GBSBaseModule(context);
+        val base = GBSBaseModule(context)
 
         // Initialize modules, and make sure they succeeded
         check(base.initialize().isSuccess)
