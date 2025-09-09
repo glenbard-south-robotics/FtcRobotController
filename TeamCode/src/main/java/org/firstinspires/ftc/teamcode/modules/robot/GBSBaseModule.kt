@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.modules.robot
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import kotlin.math.abs
 
 private const val WHEELS_INCHES_TO_TICKS = 140 / Math.PI
 
@@ -39,7 +41,39 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     override fun run(): Result<Unit> {
         val gamepad1 = context.gamepads.gamepad1
 
-        val fine_adjust_mode = gamepad1.a
+        val leftStickY = -gamepad1.left_stick_y.toDouble()
+        val rightStickY = -gamepad1.right_stick_y.toDouble()
+
+        // Fine adjust mode allows for more granular control (e.g for parking)
+        val fineAdjustMode = gamepad1.a
+
+        val config = GBSBaseModuleConfiguration()
+
+        val stickThreshold = if (fineAdjustMode) {
+            config.FINE_ADJUST_STICK_THRESHOLD
+        } else {
+            config.STICK_THRESHOLD
+        }
+
+        val powerCoefficient = if (fineAdjustMode) {
+            config.FINE_ADJUST_POWER_COEFFICIENT
+        } else {
+            1.0
+        }
+
+        val leftPower = if (abs(leftStickY) > stickThreshold) {
+            leftStickY * config.BASE_POWER * powerCoefficient
+        } else {
+            0.0
+        }
+
+        val rightPower = if (abs(rightStickY) > stickThreshold) {
+            rightStickY * config.BASE_POWER * powerCoefficient
+        } else {
+            0.0
+        }
+
+        setMotorPowers(leftPower, rightPower)
 
         return Result.success(Unit)
     }
