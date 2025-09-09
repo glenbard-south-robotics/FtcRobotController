@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.test
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.CYCLE_MS
-import org.firstinspires.ftc.teamcode.modules.GBSGamepadPair
+import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 

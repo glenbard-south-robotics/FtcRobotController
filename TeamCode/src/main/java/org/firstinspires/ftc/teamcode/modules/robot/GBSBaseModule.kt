@@ -30,9 +30,12 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
             leftDrive.direction = DcMotorSimple.Direction.REVERSE
 
+            context.telemetry.addLine("[INIT]: GBSBaseModule initialized.")
+            context.telemetry.update()
+
             Result.success(Unit)
         } catch (e: Exception) {
-            context.telemetry.addLine("An exception was raised in GBSBaseModule: ${e.message}")
+            context.telemetry.addLine("[ERR] An exception was raised in GBSBaseModule: ${e.message}")
             context.telemetry.update()
             Result.failure(e)
         }
