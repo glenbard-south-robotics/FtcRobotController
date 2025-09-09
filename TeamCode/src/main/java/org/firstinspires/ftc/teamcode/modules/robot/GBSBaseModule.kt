@@ -65,7 +65,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
             // Idle until both motors are done, or we've reached the timeout
             while ((leftDrive.isBusy || rightDrive.isBusy) && autoDriveTimer.milliseconds() < timeoutMs) {
-                Thread.yield() // TODO: Run OpMode.idle() by reference instead
+                context.opMode.idle()
             }
 
             leftDrive.power = 0.0
