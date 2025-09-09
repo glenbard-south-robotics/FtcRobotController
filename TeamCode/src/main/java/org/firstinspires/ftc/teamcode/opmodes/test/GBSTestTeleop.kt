@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.modules.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 
+@Suppress("unused")
 @TeleOp(name = "GBSTestTeleop", group = "Tests")
 class GBSTestTeleop : LinearOpMode() {
     override fun runOpMode() {
