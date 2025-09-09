@@ -2,20 +2,28 @@ package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+private const val WHEELS_INCHES_TO_TICKS = 140 / Math.PI
 
 class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
-
-    private val WHEELS_INCHES_TO_TICKS = 140 / Math.PI
+    private var autoDriveTimer: ElapsedTime = ElapsedTime()
 
     private lateinit var leftDrive: DcMotor
     private lateinit var rightDrive: DcMotor
 
     override fun initialize(): Result<Unit> {
         return try {
-            leftDrive = context.hardwareMap.get(DcMotor::class.java, "leftDrive")
-            rightDrive = context.hardwareMap.get(DcMotor::class.java, "rightDrive")
+            val left = context.hardwareMap.tryGet(DcMotor::class.java, "leftDrive")
+                ?: throw GBSHardwareMissingException("leftDrive")
+
+            val right = context.hardwareMap.tryGet(DcMotor::class.java, "rightDrive")
+                ?: throw GBSHardwareMissingException("rightDrive")
+
+            leftDrive = left
+            rightDrive = right
 
             leftDrive.direction = DcMotorSimple.Direction.REVERSE
 
@@ -33,5 +41,43 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     override fun shutdown(): Result<Unit> {
         return Result.success(Unit)
+    }
+
+    fun autoDrive(
+        speed: Double,
+        leftDistanceInches: Int,
+        rightDistanceInches: Int,
+        timeoutMs: Int = 5000
+    ): Result<Boolean> {
+        try {
+            autoDriveTimer.reset()
+
+            leftDrive.targetPosition =
+                (leftDrive.currentPosition + leftDistanceInches * WHEELS_INCHES_TO_TICKS).toInt()
+            rightDrive.targetPosition =
+                (rightDrive.currentPosition + rightDistanceInches * WHEELS_INCHES_TO_TICKS).toInt()
+
+            leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
+            rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
+
+            leftDrive.power = Math.abs(speed)
+            rightDrive.power = Math.abs(speed)
+
+            // Idle until both motors are done, or we've reached the timeout
+            while ((leftDrive.isBusy || rightDrive.isBusy) && autoDriveTimer.milliseconds() < timeoutMs) {
+                Thread.yield() // TODO: Run OpMode.idle() by reference instead
+            }
+
+            leftDrive.power = 0.0
+            rightDrive.power = 0.0
+
+            leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+            rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+            return Result.success(autoDriveTimer.milliseconds() >= timeoutMs)
+
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 }
