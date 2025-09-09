@@ -1,5 +1,3 @@
 package org.firstinspires.ftc.teamcode
 
-class GBSConfiguration {
-
-}
+const val CYCLE_MS: Long = 50L
