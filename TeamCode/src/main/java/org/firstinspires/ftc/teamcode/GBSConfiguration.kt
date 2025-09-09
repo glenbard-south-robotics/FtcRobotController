@@ -9,3 +9,9 @@ class GBSBaseModuleConfiguration {
     val STICK_THRESHOLD = 0.2
     val FINE_ADJUST_STICK_THRESHOLD = 0.05
 }
+
+@Suppress("PropertyName")
+class GBSFlywheelModuleConfiguration {
+    val TRIGGER_THRESHOLD = 0.2
+}
+

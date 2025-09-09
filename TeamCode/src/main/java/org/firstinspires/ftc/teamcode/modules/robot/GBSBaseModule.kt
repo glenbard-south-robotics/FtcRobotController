@@ -35,7 +35,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
             Result.success(Unit)
         } catch (e: Exception) {
-            context.telemetry.addLine("[ERR] An exception was raised in GBSBaseModule: ${e.message}")
+            context.telemetry.addLine("[ERR] An exception was raised in GBSBaseModule::init: ${e.message}")
             context.telemetry.update()
             Result.failure(e)
         }
