@@ -24,7 +24,6 @@ private const val MAX_VELOCITY = 2200.0
 class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
     private lateinit var flywheel: DcMotorEx
     private var state: FlywheelState = FlywheelState.OFF
-w
     private val autoLaunchTimer = ElapsedTime()
     private var autoTargetVelocity: Double = 0.0
     private var autoTimeoutMs: Int = 0
@@ -33,12 +32,9 @@ w
         return try {
             val flywheel = context.hardwareMap.tryGet(DcMotorEx::class.java, "flywheel")
                 ?: throw GBSHardwareMissingException("flywheel")
-
             this.flywheel = flywheel
-
             flywheel.mode = DcMotor.RunMode.RUN_USING_ENCODER
             flywheel.direction = DcMotorSimple.Direction.REVERSE
-
             Result.success(Unit)
         } catch (e: Exception) {
             context.telemetry.addLine("[ERR]: An exception was raised in GBSFlywheelModule::init: ${e.message}")
@@ -66,7 +62,6 @@ w
     private fun handleOffState(): Result<Unit> {
         val gamepad = context.gamepads.gamepad2
         val config = GBSFlywheelModuleConfiguration()
-
         val triggerPower = max(gamepad.right_trigger, gamepad.left_trigger)
 
         return when {
@@ -77,15 +72,12 @@ w
                 context.telemetry.update()
                 Result.success(Unit)
             }
-
             gamepad.dpad_up || gamepad.dpad_down || gamepad.dpad_left -> {
                 state = FlywheelState.MANUAL
                 context.telemetry.addLine("[FLYWHEEL]: Transitioning to MANUAL state.")
                 context.telemetry.update()
-                // Transition to MANUAL in the next cycle
                 Result.success(Unit)
             }
-
             else -> {
                 flywheel.velocity = 0.0
                 context.telemetry.addData("[FLYWHEEL]: Current Velocity", flywheel.velocity)
@@ -109,15 +101,13 @@ w
                 context.telemetry.update()
                 Result.success(Unit)
             }
-
+            // Transition back to OFF if no dpad buttons are pressed
             !gamepad.dpad_up && !gamepad.dpad_down && !gamepad.dpad_left -> {
                 state = FlywheelState.OFF
                 context.telemetry.addLine("[FLYWHEEL]: No dpad pressed. Transitioning to OFF state.")
                 context.telemetry.update()
-                // Transition to OFF in the next cycle
                 Result.success(Unit)
             }
-
             gamepad.dpad_up -> {
                 flywheel.velocity = MAX_VELOCITY
                 context.telemetry.addData("[FLYWHEEL]: Target Velocity", MAX_VELOCITY)
@@ -125,7 +115,6 @@ w
                 context.telemetry.update()
                 Result.success(Unit)
             }
-
             gamepad.dpad_down -> {
                 flywheel.velocity = BANK_VELOCITY
                 context.telemetry.addData("[FLYWHEEL]: Target Velocity", BANK_VELOCITY)
@@ -133,7 +122,6 @@ w
                 context.telemetry.update()
                 Result.success(Unit)
             }
-
             gamepad.dpad_left -> {
                 flywheel.velocity = FAR_VELOCITY
                 context.telemetry.addData("[FLYWHEEL]: Target Velocity", FAR_VELOCITY)
@@ -141,8 +129,8 @@ w
                 context.telemetry.update()
                 Result.success(Unit)
             }
-
             else -> {
+                // This case should not be reached due to the previous checks
                 Result.success(Unit)
             }
         }
@@ -154,7 +142,6 @@ w
         val triggerPower = max(gamepad.right_trigger, gamepad.left_trigger)
 
         return if (triggerPower < config.TRIGGER_THRESHOLD) {
-            // Trigger released, transition to OFF
             flywheel.power = 0.0
             state = FlywheelState.OFF
             context.telemetry.addLine("[FLYWHEEL]: Trigger released. Transitioning to OFF state.")
@@ -171,7 +158,6 @@ w
     private fun handleAutoLaunchState(): Result<Unit> {
         val launchComplete =
             (flywheel.velocity >= autoTargetVelocity) || (autoLaunchTimer.milliseconds() >= autoTimeoutMs)
-
         if (launchComplete) {
             // TODO: Launch a projectile using the hopper module
             flywheel.velocity = 0.0
@@ -180,7 +166,6 @@ w
             context.telemetry.update()
             return Result.success(Unit)
         }
-
         context.telemetry.addData("[FLYWHEEL]: Auto-launching...", autoTargetVelocity)
         context.telemetry.addData("[FLYWHEEL]: Current Velocity", flywheel.velocity)
         context.telemetry.addData("[FLYWHEEL]: State", state)
