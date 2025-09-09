@@ -13,5 +13,6 @@ class GBSBaseModuleConfiguration {
 @Suppress("PropertyName")
 class GBSFlywheelModuleConfiguration {
     val TRIGGER_THRESHOLD = 0.2
+    var BRAKE_TRIGGER_COEFFICIENT = 0.5
 }
 
