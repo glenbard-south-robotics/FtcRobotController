@@ -40,7 +40,6 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
             leftDrive.direction = DcMotorSimple.Direction.REVERSE
 
-            // Set initial state and mode
             leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
