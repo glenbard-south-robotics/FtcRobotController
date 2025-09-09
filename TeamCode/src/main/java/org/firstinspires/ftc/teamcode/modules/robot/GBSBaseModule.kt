@@ -37,10 +37,25 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     override fun run(): Result<Unit> {
+        val gamepad1 = context.gamepads.gamepad1
+
+        val fine_adjust_mode = gamepad1.a
+
         return Result.success(Unit)
     }
 
     override fun shutdown(): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    fun setMotorPowers(leftPower: Double, rightPower: Double): Result<Unit> {
+        try {
+            leftDrive.power = leftPower
+            rightDrive.power = rightPower
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+
         return Result.success(Unit)
     }
 
