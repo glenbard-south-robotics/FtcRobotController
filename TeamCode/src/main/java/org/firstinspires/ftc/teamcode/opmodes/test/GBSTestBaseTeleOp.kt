@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 
 @Suppress("unused")
-@TeleOp(name = "GBSTestBase", group = "Tests")
-class GBSTestBase : LinearOpMode() {
+@TeleOp(name = "GBSTestBaseTeleOp", group = "Tests")
+class GBSTestBaseTeleOp : LinearOpMode() {
     override fun runOpMode() {
         val context = GBSModuleContext(
             opMode = this,

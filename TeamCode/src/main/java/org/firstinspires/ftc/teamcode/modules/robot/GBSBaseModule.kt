@@ -82,6 +82,8 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     override fun shutdown(): Result<Unit> {
+        context.telemetry.addLine("[STDN]: GBSBaseModule shutdown.")
+        context.telemetry.update()
         return Result.success(Unit)
     }
 
