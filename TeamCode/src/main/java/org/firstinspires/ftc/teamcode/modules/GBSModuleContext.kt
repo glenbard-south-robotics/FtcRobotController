@@ -7,5 +7,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 data class GBSModuleContext(
     val opMode: LinearOpMode,
     val hardwareMap: HardwareMap,
-    val telemetry: Telemetry
+    val telemetry: Telemetry,
+    val gamepads: GBSGamepadPair
 )
