@@ -21,7 +21,7 @@ private const val BANK_VELOCITY = 1300.0
 private const val FAR_VELOCITY = 1900.0
 private const val MAX_VELOCITY = 3200.0
 
-class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
+class GBSFlywheelModule(context: GBSModuleContext, val hopper: GBSHopperModule?) : GBSRobotModule(context) {
     private lateinit var flywheel: DcMotorEx
     private var state: FlywheelState = FlywheelState.OFF
     private val autoLaunchTimer = ElapsedTime()
@@ -159,7 +159,7 @@ class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
         val launchComplete =
             (flywheel.velocity >= autoTargetVelocity) || (autoLaunchTimer.milliseconds() >= autoTimeoutMs)
         if (launchComplete) {
-            // TODO: Launch a projectile using the hopper module
+            hopper?.fire()
             flywheel.velocity = 0.0
             state = FlywheelState.OFF
             context.telemetry.addLine("[FLYWHEEL]: Auto-launch complete. Transitioning to OFF state.")
