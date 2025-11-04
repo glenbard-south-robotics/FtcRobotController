@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
@@ -27,6 +28,8 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     private var autoSpeed: Double = 0.0
     private var autoTimeoutMs: Int = 0
+
+    private var fineAdjustMode: Boolean = false
 
     override fun initialize(): Result<Unit> {
         return try {
@@ -67,20 +70,46 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
         return Result.success(Unit)
     }
 
-    private fun handleIdleState(): Result<Unit> {
-        context.telemetry.addLine("idle");
-        val gamepad1 = context.gamepads.gamepad1
+    /**
+     * Get the manual stick threshold, depending on `fineAdjustMode` and `config`
+     */
+    fun getManualStickThreshold(config: GBSBaseModuleConfiguration): Double {
+        return if (this.fineAdjustMode) config.STICK_THRESHOLD else config.FINE_ADJUST_STICK_THRESHOLD
+    }
 
-        val leftStickY = -gamepad1.left_stick_y.toDouble()
-        val rightStickY = -gamepad1.right_stick_y.toDouble()
+    /**
+    * Check if the `y` values of any of the gamepad's sticks are over `config`'s `STICK_THRESHOLD`
+     */
+    fun sticksYOverThreshold(config: GBSBaseModuleConfiguration, gamepad: Gamepad): Boolean {
+        val threshold = getManualStickThreshold(config)
+        return abs(-gamepad.left_stick_y) > threshold || abs(-gamepad.right_stick_y) > threshold
+    }
+
+    /**
+     * Get the manual power coefficient, depending on `fineAdjustMode` and `config`
+     */
+    fun getManualPowerCoefficient(config: GBSBaseModuleConfiguration): Double {
+        return if (this.fineAdjustMode) config.FINE_ADJUST_POWER_COEFFICIENT else config.BASE_POWER_COEFFICIENT
+    }
+
+    /**
+     * Enable or disables `fineAdjustMode` depending if the respective buttons are pressed
+     * Rumbles the controller in different durations for haptic feedback
+     */
+    fun enableOrDisableFineAdjustMode(gamepad: Gamepad) {
+        if (gamepad.cross) {
+            fineAdjustMode = true
+            gamepad.rumble(250)
+        } else if (gamepad.circle) {
+            gamepad.rumble(750)
+        }
+    }
+
+    private fun handleIdleState(): Result<Unit> {
+        val gamepad1 = context.gamepads.gamepad1
         val config = GBSBaseModuleConfiguration()
 
-        val stickThreshold = 0.0
-        context.telemetry.addData("Gamepad 1 Left Stick Y", gamepad1.left_stick_y)
-        context.telemetry.addData("Gamepad 1 Right Stick Y", gamepad1.right_stick_y)
-        context.telemetry.update()
-        context.telemetry.addLine("$leftStickY, $rightStickY - ${config.STICK_THRESHOLD}")
-        if (abs(leftStickY) > stickThreshold || abs(rightStickY) > stickThreshold) {
+        if (sticksYOverThreshold(config, gamepad1)) {
             state = GBSBaseModuleState.MANUAL
         } else {
             setMotorPowers(0.0, 0.0)
@@ -89,44 +118,37 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleManualState(): Result<Unit> {
-        context.telemetry.addLine("manual");
         val gamepad1 = context.gamepads.gamepad1
 
         val leftStickY = -gamepad1.left_stick_y.toDouble()
         val rightStickY = -gamepad1.right_stick_y.toDouble()
 
         val config = GBSBaseModuleConfiguration()
-        val stickThreshold = config.STICK_THRESHOLD
+        val stickThreshold = getManualStickThreshold(config)
 
+        enableOrDisableFineAdjustMode(gamepad1)
+
+        // Transition to `idle` if both sticks are lower than the threshold needed to make the motors move
         if (abs(leftStickY) <= stickThreshold && abs(rightStickY) <= stickThreshold) {
             state = GBSBaseModuleState.IDLE
             setMotorPowers(0.0, 0.0)
             return Result.success(Unit)
         }
 
-        val fineAdjustMode = gamepad1.a
+        val powerCoefficient = getManualPowerCoefficient(config)
 
-        val fineAdjustStickThreshold = config.FINE_ADJUST_STICK_THRESHOLD
-        val powerCoefficient = if (fineAdjustMode) config.FINE_ADJUST_POWER_COEFFICIENT else 1.0
-        val stickThresholdToUse = if (fineAdjustMode) fineAdjustStickThreshold else stickThreshold
-
-        val leftPower = if (abs(leftStickY) > stickThresholdToUse) {
-            leftStickY * config.BASE_POWER * powerCoefficient
-        } else {
-            0.0
-        }
-
-        val rightPower = if (abs(rightStickY) > stickThresholdToUse) {
-            rightStickY * config.BASE_POWER * powerCoefficient
-        } else {
-            0.0
-        }
+        val leftPower = if (abs(leftStickY) > stickThreshold)
+            leftStickY * powerCoefficient else 0.0
+        val rightPower = if (abs(rightStickY) > stickThreshold)
+            rightStickY * powerCoefficient else 0.0
 
         return setMotorPowers(leftPower, rightPower)
     }
 
+    /**
+     * Handle `auto` state. Transitions to `idle` if both motors are stopped, or the timeout is exceeded.
+     */
     private fun handleAutoDriveState(): Result<Unit> {
-        context.telemetry.addLine("auto");
         if ((!leftDrive.isBusy && !rightDrive.isBusy) || autoDriveTimer.milliseconds() >= autoTimeoutMs) {
             setMotorPowers(0.0, 0.0)
             leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -147,6 +169,9 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
         return Result.success(Unit)
     }
 
+    /**
+     * Attempt to drive so many `leftDistanceInches` and `rightDistanceInches`, errors if we aren't in `idle`
+     */
     fun autoDrive(
         speed: Double,
         leftDistanceInches: Int,
