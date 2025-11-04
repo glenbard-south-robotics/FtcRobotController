@@ -17,7 +17,7 @@ class GBSWebcamModule(context: GBSModuleContext, val desiredTag: Int) : GBSRobot
     private lateinit var aprilTagDetection: AprilTagDetection
 
     private var targetFound = false
-    private lateinit var tag: AprilTagDetection;
+    private lateinit var tag: AprilTagDetection
 
     override fun initialize(): Result<Unit> {
         return try {
