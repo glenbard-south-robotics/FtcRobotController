@@ -68,13 +68,18 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleIdleState(): Result<Unit> {
+        context.telemetry.addLine("idle");
         val gamepad1 = context.gamepads.gamepad1
 
         val leftStickY = -gamepad1.left_stick_y.toDouble()
         val rightStickY = -gamepad1.right_stick_y.toDouble()
         val config = GBSBaseModuleConfiguration()
 
-        val stickThreshold = config.STICK_THRESHOLD
+        val stickThreshold = 0.0
+        context.telemetry.addData("Gamepad 1 Left Stick Y", gamepad1.left_stick_y)
+        context.telemetry.addData("Gamepad 1 Right Stick Y", gamepad1.right_stick_y)
+        context.telemetry.update()
+        context.telemetry.addLine("$leftStickY, $rightStickY - ${config.STICK_THRESHOLD}")
         if (abs(leftStickY) > stickThreshold || abs(rightStickY) > stickThreshold) {
             state = GBSBaseModuleState.MANUAL
         } else {
@@ -84,6 +89,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleManualState(): Result<Unit> {
+        context.telemetry.addLine("manual");
         val gamepad1 = context.gamepads.gamepad1
 
         val leftStickY = -gamepad1.left_stick_y.toDouble()
@@ -120,6 +126,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleAutoDriveState(): Result<Unit> {
+        context.telemetry.addLine("auto");
         if ((!leftDrive.isBusy && !rightDrive.isBusy) || autoDriveTimer.milliseconds() >= autoTimeoutMs) {
             setMotorPowers(0.0, 0.0)
             leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
@@ -132,8 +139,8 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     fun setMotorPowers(leftPower: Double, rightPower: Double): Result<Unit> {
         try {
-            leftDrive.power = leftPower
-            rightDrive.power = rightPower
+            leftDrive.power = -leftPower
+            rightDrive.power = -rightPower
         } catch (e: Exception) {
             return Result.failure(e)
         }

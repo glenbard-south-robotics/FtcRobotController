@@ -19,7 +19,7 @@ private enum class FlywheelState {
 
 private const val BANK_VELOCITY = 1300.0
 private const val FAR_VELOCITY = 1900.0
-private const val MAX_VELOCITY = 2200.0
+private const val MAX_VELOCITY = 3200.0
 
 class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
     private lateinit var flywheel: DcMotorEx

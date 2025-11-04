@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import kotlin.math.max
 
 private enum class HopperState {
     IDLE,
@@ -28,7 +29,7 @@ class GBSHopperModule(context: GBSModuleContext) : GBSRobotModule(context) {
             this.coreHex = coreHexMotor
             this.servo = servo
             coreHex.direction = DcMotorSimple.Direction.REVERSE
-            servo.power = 0.0
+//            servo.power = 0.0
             context.telemetry.addLine("[INIT]: GBSHopperModule initialized.")
             context.telemetry.update()
             Result.success(Unit)
@@ -49,27 +50,29 @@ class GBSHopperModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     override fun shutdown(): Result<Unit> {
         coreHex.power = 0.0
-        servo.power = 0.0
+//        servo.power = 0.0
         context.telemetry.addLine("[STDN]: GBSHopperModule shutdown.")
         context.telemetry.update()
         return Result.success(Unit)
     }
 
     private fun handleIdleState(): Result<Unit> {
-        val gamepad1 = context.gamepads.gamepad1
+        val gamepad2 = context.gamepads.gamepad2
         coreHex.power = 0.0
-        servo.power = 0.0
+//        servo.power = 0.0
         context.telemetry.addLine("[HOPPER]: Idle")
         context.telemetry.update()
 
-        // Transition to FIRING or MANUAL states
+        // Transition to FIRING (Bumpers) or MANUAL (Triggers) states
         return when {
-            gamepad1.left_bumper || gamepad1.right_bumper -> {
-                state = HopperState.FIRING
+            // New MANUAL input: Check if triggers are pressed for manual control
+            gamepad2.left_trigger > 0.1 || gamepad2.right_trigger > 0.1 -> {
+                state = HopperState.MANUAL
                 Result.success(Unit)
             }
-            gamepad1.dpad_left || gamepad1.dpad_right -> {
-                state = HopperState.MANUAL
+            // FIRING input (remains the same): Check for bumpers
+            gamepad2.left_bumper || gamepad2.right_bumper -> {
+                state = HopperState.FIRING
                 Result.success(Unit)
             }
             else -> {
@@ -79,24 +82,20 @@ class GBSHopperModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleManualState(): Result<Unit> {
-        val gamepad1 = context.gamepads.gamepad1
+        val gamepad2 = context.gamepads.gamepad2
+        val leftTrigger = gamepad2.left_trigger
+        val rightTrigger = gamepad2.right_trigger
+
         return when {
-            gamepad1.dpad_left -> {
-                servo.power = 1.0
-                coreHex.power = 0.0
-                context.telemetry.addLine("[HOPPER]: Manual servo control (Dpad Left)")
-                context.telemetry.update()
+            gamepad2.left_bumper || gamepad2.right_bumper -> {
+                state = HopperState.FIRING
                 Result.success(Unit)
             }
-            gamepad1.dpad_right -> {
-                servo.power = -1.0
-                coreHex.power = 0.0
-                context.telemetry.addLine("[HOPPER]: Manual servo control (Dpad Right)")
-                context.telemetry.update()
+            gamepad2.dpad_right || gamepad2.dpad_left -> {
+                state = HopperState.FIRING
                 Result.success(Unit)
             }
-            // Transition back to IDLE when dpad is released
-            !gamepad1.dpad_left && !gamepad1.dpad_right -> {
+            leftTrigger <= 0.1 && rightTrigger <= 0.1 && !gamepad2.left_bumper && !gamepad2.right_bumper -> {
                 state = HopperState.IDLE
                 Result.success(Unit)
             }
@@ -107,21 +106,23 @@ class GBSHopperModule(context: GBSModuleContext) : GBSRobotModule(context) {
     }
 
     private fun handleFiringState(): Result<Unit> {
-        val gamepad = context.gamepads.gamepad1
+        val gamepad = context.gamepads.gamepad2
         val isFiringCommandActive = gamepad.left_bumper || gamepad.right_bumper
 
         return if (isFiringCommandActive) {
-            coreHex.power = 1.0
-            servo.power = -1.0
-            context.telemetry.addLine("[HOPPER]: Firing...")
+            coreHex.power = -1.0
+            context.telemetry.addLine("Servo -1")
+//            servo.power = -1.0
             context.telemetry.update()
             Result.success(Unit)
         } else {
             coreHex.power = 0.0
-            servo.power = 0.0
+            if (gamepad.b) {
+//                servo.power = -1.0
+            } else if (gamepad.x) {
+//                servo.power = 1.0
+            }
             state = HopperState.IDLE
-            context.telemetry.addLine("[HOPPER]: Firing complete. Transitioning to IDLE.")
-            context.telemetry.update()
             Result.success(Unit)
         }
     }
