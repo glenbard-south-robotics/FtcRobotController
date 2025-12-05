@@ -7,12 +7,14 @@ import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
-import org.firstinspires.ftc.teamcode.modules.robot.GBSHopperModule
+import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 
 @Suppress("unused")
 @TeleOp(name = "GBSTestAllOp", group = "Tests")
 class GBSTestFlywheelAllOp : LinearOpMode() {
     override fun runOpMode() {
+        val gamepad2 = this.gamepad2
+
         val context = GBSModuleContext(
             opMode = this,
             hardwareMap = this.hardwareMap,
@@ -21,20 +23,21 @@ class GBSTestFlywheelAllOp : LinearOpMode() {
         )
 
         val base = GBSBaseModule(context)
-        val hopper = GBSHopperModule(context)
+        val intake = GBSIntakeModule(context)
         val flywheel = GBSFlywheelModule(context)
 
         // Initialize modules, and make sure they succeeded
         check(base.initialize().isSuccess)
-        check(hopper.initialize().isSuccess)
+        check(intake.initialize().isSuccess)
         check(flywheel.initialize().isSuccess)
-
+        
         waitForStart()
 
         while (opModeIsActive()) {
             check(base.run().isSuccess)
-            check(hopper.run().isSuccess)
+            check(intake.run().isSuccess)
             check(flywheel.run().isSuccess)
+
             idle()
             sleep(CYCLE_MS)
         }

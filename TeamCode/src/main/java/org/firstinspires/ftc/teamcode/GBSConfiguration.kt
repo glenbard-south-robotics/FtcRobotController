@@ -24,7 +24,18 @@ class GBSBaseModuleConfiguration {
 }
 
 @Suppress("PropertyName")
+class GBSIntakeModuleConfiguration {
+    val POWER = 1.0
+    val FORWARD_COEFFICIENT = 1.0
+    val SLOW_MODE_COEFFICIENT = 0.5
+    val REVERSE_COEFFICIENT = 0.5
+
+    val LAUNCH_REVERSE_DURATION_MS = 1000L
+    val LAUNCH_FORWARD_DURATION_MS = 1000L
+    val LAUNCH_FORWARD_COEFFICIENT = 1.0
+}
+
+@Suppress("PropertyName")
 class GBSFlywheelModuleConfiguration {
-    val TRIGGER_THRESHOLD = 0.2
-    var BRAKE_TRIGGER_COEFFICIENT = 0.5
+    val FORWARD_TPS = 9600
 }

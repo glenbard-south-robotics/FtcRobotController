@@ -33,7 +33,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     override fun initialize(): Result<Unit> {
         return try {
-            val left = context.hardwareMap.tryGet(DcMotor::class.java, "leftDrive")
+            val left = context.hardwareMap .tryGet(DcMotor::class.java, "leftDrive")
                 ?: throw GBSHardwareMissingException("leftDrive")
             val right = context.hardwareMap.tryGet(DcMotor::class.java, "rightDrive")
                 ?: throw GBSHardwareMissingException("rightDrive")
@@ -97,11 +97,9 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
      * Rumbles the controller in different durations for haptic feedback
      */
     fun enableOrDisableFineAdjustMode(gamepad: Gamepad) {
-        if (gamepad.cross) {
-            fineAdjustMode = true
+        if (gamepad.crossWasPressed()) {
+            fineAdjustMode = !fineAdjustMode
             gamepad.rumble(250)
-        } else if (gamepad.circle) {
-            gamepad.rumble(750)
         }
     }
 
@@ -114,6 +112,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
         } else {
             setMotorPowers(0.0, 0.0)
         }
+
         return Result.success(Unit)
     }
 
