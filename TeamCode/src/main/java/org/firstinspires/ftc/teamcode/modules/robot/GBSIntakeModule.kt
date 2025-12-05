@@ -106,9 +106,9 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
         val gamepad2 = context.gamepads.gamepad2
 
         val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
-        val slowModeCoefficent = if (slowMode) config.SLOW_MODE_COEFFICIENT else 1.0
+        val slowModeCoefficient = if (slowMode) config.SLOW_MODE_COEFFICIENT else 1.0
 
-        val power = config.POWER * coefficient * modeCoefficient * slowModeCoefficent
+        val power = config.POWER * coefficient * modeCoefficient * slowModeCoefficient
 
         if (gamepad2.leftBumperWasPressed()) {
             if (state == GBSIntakeModuleState.FORWARD) {
