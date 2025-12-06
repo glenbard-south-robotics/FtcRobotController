@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
@@ -16,14 +17,14 @@ enum class GBSIntakeModuleState {
 class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
-    private lateinit var intakeMotor: DcMotor
+    private lateinit var intakeMotor: DcMotorEx
     private var slowMode: Boolean = true
 
     private var launchStartTimeMs: Long = 0
 
     override fun initialize(): Result<Unit> {
         return try {
-            val intake = context.hardwareMap.tryGet(DcMotor::class.java, "intakeMotor")
+            val intake = context.hardwareMap.tryGet(DcMotorEx::class.java, "intakeMotor")
                 ?: throw GBSHardwareMissingException("intakeMotor")
 
             intakeMotor = intake
@@ -132,6 +133,14 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
             setMotorPower(0.0)
         }
 
+        if (gamepad2.touchpadWasPressed()) {
+            slowMode = false
+        }
+
+        if (gamepad2.touchpadWasReleased()) {
+            slowMode = true
+        }
+
         setMotorPower(power)
 
         return Result.success(Unit)
@@ -139,9 +148,14 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     private fun setMotorPower(power: Double): Result<Unit> {
         intakeMotor.power = power
-
         return Result.success(Unit)
     }
+
+    private fun setMotorVelocity(velocity: Double): Result<Unit> {
+        intakeMotor.velocity = velocity
+        return Result.success(Unit)
+    }
+
 
     private fun handleLaunchState(): Result<Unit> {
         val currentTimeMs = context.opMode.runtime.toLong()
@@ -170,4 +184,20 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
         return Result.success(Unit)
     }
+
+    fun autoIntakeForward(speed: Double): Result<Unit> {
+        state = GBSIntakeModuleState.FORWARD
+        return setMotorVelocity(speed)
+    }
+
+    fun autoIntakeReverse(speed: Double): Result<Unit> {
+        state = GBSIntakeModuleState.REVERSE
+        return setMotorVelocity(-speed)
+    }
+
+    fun autoIntakeStop(): Result<Unit> {
+        state = GBSIntakeModuleState.IDLE
+        return setMotorVelocity(0.0)
+    }
+
 }

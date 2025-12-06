@@ -37,5 +37,5 @@ class GBSIntakeModuleConfiguration {
 
 @Suppress("PropertyName")
 class GBSFlywheelModuleConfiguration {
-    val FORWARD_TPS = 9600
+    val FORWARD_TPS = 19600.0 * 0.7
 }

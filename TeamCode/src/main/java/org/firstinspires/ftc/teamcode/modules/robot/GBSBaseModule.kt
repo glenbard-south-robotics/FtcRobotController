@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import java.sql.Array
+import java.util.ArrayList
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -30,6 +32,9 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
     private var autoTimeoutMs: Int = 0
 
     private var fineAdjustMode: Boolean = false
+
+    private val autoDriveCallbacks: MutableList<() -> Unit> = ArrayList()
+
 
     override fun initialize(): Result<Unit> {
         return try {
@@ -96,7 +101,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
      * Enable or disables `fineAdjustMode` depending if the respective buttons are pressed
      * Rumbles the controller in different durations for haptic feedback
      */
-    fun enableOrDisableFineAdjustMode(gamepad: Gamepad) {
+    fun toggleFineAdjustMode(gamepad: Gamepad) {
         if (gamepad.crossWasPressed()) {
             fineAdjustMode = !fineAdjustMode
             gamepad.rumble(250)
@@ -125,7 +130,7 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
         val config = GBSBaseModuleConfiguration()
         val stickThreshold = getManualStickThreshold(config)
 
-        enableOrDisableFineAdjustMode(gamepad1)
+        toggleFineAdjustMode(gamepad1)
 
         // Transition to `idle` if both sticks are lower than the threshold needed to make the motors move
         if (abs(leftStickY) <= stickThreshold && abs(rightStickY) <= stickThreshold) {
@@ -153,6 +158,9 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
             leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             state = GBSBaseModuleState.IDLE
+
+            autoDriveCallbacks.forEach { it() }
+
             return Result.success(Unit)
         }
         return Result.success(Unit)
@@ -175,7 +183,8 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
         speed: Double,
         leftDistanceInches: Int,
         rightDistanceInches: Int,
-        timeoutMs: Int = 5000
+        timeoutMs: Int = 5000,
+        vararg callbacks: () -> Unit
     ): Result<Boolean> {
         if (state != GBSBaseModuleState.IDLE) {
             return Result.failure(IllegalStateException("[ERR]: GBSBaseModule cannot autoDrive while not IDLE."))
@@ -188,12 +197,15 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
             autoSpeed = speed
             autoTimeoutMs = timeoutMs
 
+            autoDriveCallbacks.clear()
+            autoDriveCallbacks.addAll(callbacks)
+
             leftDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
-            leftDrive.targetPosition = (leftDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
+            leftDrive.targetPosition = -(leftDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
             rightDrive.targetPosition =
-                (rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
+                -(rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION

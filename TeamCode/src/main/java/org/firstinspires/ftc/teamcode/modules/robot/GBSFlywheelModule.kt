@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
-import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
@@ -10,6 +9,7 @@ import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 enum class GBSFlywheelModuleState {
     IDLE,
     FORWARD,
+    AUTO,
 }
 
 class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
@@ -37,14 +37,23 @@ class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
     override fun run(): Result<Unit> {
         return when (state) {
             GBSFlywheelModuleState.IDLE -> handleIdleState()
+            GBSFlywheelModuleState.AUTO -> handleAutoState()
             else -> handleRunningState()
         }
     }
 
     override fun shutdown(): Result<Unit> {
-        setMotorPower(0)
+        setMotorPower(0.0)
         context.telemetry.addLine("[STDN]: GBSFlywheelModule shutdown.")
         context.telemetry.update()
+        return Result.success(Unit)
+    }
+
+    private fun handleAutoState(): Result<Unit> {
+        val config = GBSFlywheelModuleConfiguration()
+        val power = config.FORWARD_TPS
+
+        setMotorPower(power)
         return Result.success(Unit)
     }
 
@@ -52,48 +61,40 @@ class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
         val gamepad2 = context.gamepads.gamepad2
 
         if (gamepad2.triangleWasPressed()) {
-            if (state == GBSFlywheelModuleState.FORWARD) {
-                state = GBSFlywheelModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            // IDLE, goto FORWARD
             state = GBSFlywheelModuleState.FORWARD
-            setMotorPower(0)
+            return Result.success(Unit)
         }
 
-        setMotorPower(0)
-
+        setMotorPower(0.0)
         return Result.success(Unit)
     }
 
     private fun handleRunningState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
         val gamepad2 = context.gamepads.gamepad2
-
         val power = config.FORWARD_TPS
 
         if (gamepad2.triangleWasPressed()) {
-            if (state == GBSFlywheelModuleState.FORWARD) {
-                state = GBSFlywheelModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            // If IDLE, goto FORWARD
-            state = GBSFlywheelModuleState.FORWARD
-            setMotorPower(0)
+            state = GBSFlywheelModuleState.IDLE
+            return Result.success(Unit)
         }
 
         setMotorPower(power)
-
         return Result.success(Unit)
     }
 
-    fun setMotorPower(power: Int): Result<Unit> {
-        context.telemetry.addLine("${power}")
-        context.telemetry.update()
-        flywheelMotor.velocity = power.toDouble()
+    fun autoFlywheelOn(): Result<Unit> {
+        state = GBSFlywheelModuleState.AUTO
+        return Result.success(Unit)
+    }
 
+    fun autoFlywheelOff(): Result<Unit> {
+        state = GBSFlywheelModuleState.IDLE
+        return Result.success(Unit)
+    }
+
+    fun setMotorPower(power: Double): Result<Unit> {
+        flywheelMotor.velocity = power.toDouble()
         return Result.success(Unit)
     }
 }
