@@ -9,15 +9,15 @@ import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
+import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
-class GBSWebcamModule(context: GBSModuleContext, val desiredTag: Int) : GBSRobotModule(context) {
+class GBSWebcamModule(context: GBSModuleContext, hardware: String) : GBSRobotModule(context, hardware) {
     private lateinit var visionPortal: VisionPortal
     private lateinit var aprilTagProcessor: AprilTagProcessor
-    private lateinit var aprilTagDetection: AprilTagDetection
+    var aprilTagDetections: ArrayList<AprilTagDetection> = ArrayList()
 
-    private var targetFound = false
-    private lateinit var tag: AprilTagDetection
+    var tag: AprilTagDetection? = null
 
     override fun initialize(): Result<Unit> {
         return try {
@@ -25,11 +25,11 @@ class GBSWebcamModule(context: GBSModuleContext, val desiredTag: Int) : GBSRobot
 
             aprilTagProcessor.setDecimation(2.0F)
 
-            val camera = context.hardwareMap.tryGet(WebcamName::class.java, "webcam")
-                ?: throw GBSHardwareMissingException("webcam")
+            val camera = context.hardwareMap.tryGet(WebcamName::class.java, hardware)
+                ?: throw GBSHardwareMissingException(hardware)
 
             visionPortal =
-                VisionPortal.Builder().setCamera(camera).addProcessor(aprilTagProcessor).build()
+                VisionPortal.Builder().setCamera(camera).setLiveViewContainerId(0).addProcessor(aprilTagProcessor).build()
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -63,19 +63,15 @@ class GBSWebcamModule(context: GBSModuleContext, val desiredTag: Int) : GBSRobot
     }
 
     override fun run(): Result<Unit> {
-        targetFound = false
-
         val currentDetections = aprilTagProcessor.detections
 
         for (detection in currentDetections) {
-            if (detection.metadata != null) {
-                if (detection.id  == desiredTag) {
-                    targetFound = true
-                    tag = detection
-                    break
-                }
-            }
+            context.telemetry.addLine("detectionId=${detection.id}")
+            context.telemetry.addLine("rawPoseX=${detection.rawPose.x}, rawPoseX=${detection.rawPose.y}, rawPoseX=${detection.rawPose.z}")
+            context.telemetry.addLine("botPosePosition=${detection.robotPose.position}, botPoseOrientation=${detection.robotPose.orientation}")
         }
+
+        aprilTagDetections = currentDetections
 
         return Result.success(Unit)
     }

@@ -21,7 +21,7 @@ enum class GBSBaseModuleState {
     AUTO_DRIVE,
 }
 
-class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
+class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSRobotModule(context, hardware) {
     private var autoDriveTimer: ElapsedTime = ElapsedTime()
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
 
@@ -206,6 +206,39 @@ class GBSBaseModule(context: GBSModuleContext) : GBSRobotModule(context) {
             leftDrive.targetPosition = -(leftDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
             rightDrive.targetPosition =
                 -(rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
+
+            leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
+            rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
+
+            leftDrive.power = abs(autoSpeed)
+            rightDrive.power = abs(autoSpeed)
+            return Result.success(false)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    fun autoPower(
+        speed: Double,
+        leftPower: Double,
+        rightPower: Double,
+    ): Result<Boolean> {
+        if (state != GBSBaseModuleState.IDLE) {
+            return Result.failure(IllegalStateException("[ERR]: GBSBaseModule cannot autoPower while not IDLE."))
+        }
+        try {
+            autoDriveTimer.reset()
+
+            state = GBSBaseModuleState.AUTO_DRIVE
+
+            autoSpeed = speed
+
+            leftDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
+            leftDrive.targetPosition = -(leftPower * WHEELS_INCHES_TO_TICKS).roundToInt()
+            rightDrive.targetPosition =
+                -(rightPower * WHEELS_INCHES_TO_TICKS).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION

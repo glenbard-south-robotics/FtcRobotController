@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules
 
-abstract class GBSRobotModule(protected val context: GBSModuleContext) {
+abstract class GBSRobotModule(protected val context: GBSModuleContext, protected val hardware: String) {
     open fun initialize(): Result<Unit> = Result.success(Unit)
     abstract fun run(): Result<Unit>
     open fun shutdown(): Result<Unit> = Result.success(Unit)

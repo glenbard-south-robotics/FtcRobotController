@@ -12,15 +12,15 @@ enum class GBSFlywheelModuleState {
     AUTO,
 }
 
-class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
+class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel") : GBSRobotModule(context, hardware) {
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
 
     private lateinit var flywheelMotor: DcMotorEx
 
     override fun initialize(): Result<Unit> {
         return try {
-            val flywheel = context.hardwareMap.tryGet(DcMotorEx::class.java, "flywheel")
-                ?: throw GBSHardwareMissingException("flywheel")
+            val flywheel = context.hardwareMap.tryGet(DcMotorEx::class.java, hardware)
+                ?: throw GBSHardwareMissingException(hardware)
 
             flywheelMotor = flywheel
 
@@ -51,7 +51,7 @@ class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     private fun handleAutoState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
-        val power = config.FORWARD_TPS
+        val power = -config.AUTO_FORWARD_TPS
 
         setMotorPower(power)
         return Result.success(Unit)
@@ -72,7 +72,7 @@ class GBSFlywheelModule(context: GBSModuleContext) : GBSRobotModule(context) {
     private fun handleRunningState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
         val gamepad2 = context.gamepads.gamepad2
-        val power = config.FORWARD_TPS
+        val power = -config.FORWARD_TPS
 
         if (gamepad2.triangleWasPressed()) {
             state = GBSFlywheelModuleState.IDLE

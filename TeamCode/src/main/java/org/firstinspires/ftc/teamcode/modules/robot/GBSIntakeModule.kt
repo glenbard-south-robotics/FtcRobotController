@@ -14,7 +14,7 @@ enum class GBSIntakeModuleState {
     LAUNCHING
 }
 
-class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
+class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor") : GBSRobotModule(context, hardware) {
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
     private lateinit var intakeMotor: DcMotorEx
@@ -24,8 +24,8 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
 
     override fun initialize(): Result<Unit> {
         return try {
-            val intake = context.hardwareMap.tryGet(DcMotorEx::class.java, "intakeMotor")
-                ?: throw GBSHardwareMissingException("intakeMotor")
+            val intake = context.hardwareMap.tryGet(DcMotorEx::class.java, hardware)
+                ?: throw GBSHardwareMissingException(hardware)
 
             intakeMotor = intake
 
@@ -88,11 +88,11 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
             setMotorPower(0.0)
         }
 
-        if (gamepad2.touchpadWasPressed()) {
+        if (gamepad2.crossWasPressed()) {
             slowMode = false
         }
 
-        if (gamepad2.touchpadWasReleased()) {
+        if (gamepad2.crossWasReleased()) {
             slowMode = true
         }
 
@@ -133,11 +133,11 @@ class GBSIntakeModule(context: GBSModuleContext) : GBSRobotModule(context) {
             setMotorPower(0.0)
         }
 
-        if (gamepad2.touchpadWasPressed()) {
+        if (gamepad2.crossWasPressed()) {
             slowMode = false
         }
 
-        if (gamepad2.touchpadWasReleased()) {
+        if (gamepad2.crossWasReleased()) {
             slowMode = true
         }
 

@@ -7,11 +7,11 @@ class GBSBaseModuleConfiguration {
     /**
      * The coefficient to the base's power in `auto` and `manual`
      */
-    val BASE_POWER_COEFFICIENT = 0.75
+    val BASE_POWER_COEFFICIENT = 0.5
     /**
      * The coefficient to the base's power in `auto` and `manual` while `fineAdjustMode` is active
      */
-    val FINE_ADJUST_POWER_COEFFICIENT = 0.25
+    val FINE_ADJUST_POWER_COEFFICIENT = 0.33
 
     /**
      * The value that a gamepad's stick Y needs to exceed for the motor to start
@@ -31,11 +31,13 @@ class GBSIntakeModuleConfiguration {
     val REVERSE_COEFFICIENT = 0.5
 
     val LAUNCH_REVERSE_DURATION_MS = 1000L
+
     val LAUNCH_FORWARD_DURATION_MS = 1000L
     val LAUNCH_FORWARD_COEFFICIENT = 1.0
 }
 
 @Suppress("PropertyName")
 class GBSFlywheelModuleConfiguration {
-    val FORWARD_TPS = 19600.0 * 0.7
+    val FORWARD_TPS = 19600.0 * 0.75
+    val AUTO_FORWARD_TPS = 19600 * 0.1
 }
