@@ -37,6 +37,7 @@ class GBSTestFlywheelAllOp : LinearOpMode() {
             check(base.run().isSuccess)
             check(intake.run().isSuccess)
             check(flywheel.run().isSuccess)
+            telemetry.update()
 
             idle()
             sleep(CYCLE_MS)

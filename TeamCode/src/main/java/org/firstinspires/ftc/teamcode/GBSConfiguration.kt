@@ -7,7 +7,8 @@ class GBSBaseModuleConfiguration {
     /**
      * The coefficient to the base's power in `auto` and `manual`
      */
-    val BASE_POWER_COEFFICIENT = 0.5
+    val BASE_POWER_COEFFICIENT = 0.75
+    val AUTO_POWER_COEFFICIENT = 0.5
     /**
      * The coefficient to the base's power in `auto` and `manual` while `fineAdjustMode` is active
      */
@@ -38,6 +39,6 @@ class GBSIntakeModuleConfiguration {
 
 @Suppress("PropertyName")
 class GBSFlywheelModuleConfiguration {
-    val FORWARD_TPS = 19600.0 * 0.75
-    val AUTO_FORWARD_TPS = 19600 * 0.1
+    val FORWARD_TPS = 2250.0
+    val AUTO_FORWARD_TPS = 2000.0
 }

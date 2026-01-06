@@ -21,10 +21,10 @@ import org.firstinspires.ftc.teamcode.roundPose3D
 import org.firstinspires.ftc.teamcode.subPose3D
 import kotlin.math.abs
 
-const val EPSILON: Double = 0.5
+const val EPSILON_RED: Double = 0.5
 
-@Autonomous(name = "GBSForwardFireAuto")
-class GBSForwardFireAuto : LinearOpMode() {
+@Autonomous(name = "GBSForwardFireAutoRed")
+class GBSForwardFireAutoRed : LinearOpMode() {
     override fun runOpMode() {
 
         val context = GBSModuleContext(
@@ -80,14 +80,14 @@ class GBSForwardFireAuto : LinearOpMode() {
 //                val errorX = desiredPosition.x - currentPose.position.x
                 val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
 
-                val Kp = 0.05
-                val turnPower = errorYaw * Kp
-
-                if (abs(errorYaw) > EPSILON) {
-                    baseModule.autoPower(0.25, -turnPower, turnPower)
-                } else {
-                    baseModule.autoPower(0.0, 0.0, 0.0)
-                }
+//                val Kp = 0.05
+//                val turnPower = errorYaw * Kp
+//
+//                if (abs(errorYaw) > EPSILON_RED) {
+//                    baseModule.autoPower(0.25, -turnPower, turnPower)
+//                } else {
+//                    baseModule.autoPower(0.0, 0.0, 0.0)
+//                }
 
 //                val forwardPower = errorX * Kp
 //

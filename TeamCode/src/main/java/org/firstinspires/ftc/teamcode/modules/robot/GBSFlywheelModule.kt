@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+
+import kotlin.math.abs
 
 enum class GBSFlywheelModuleState {
     IDLE,
@@ -14,6 +18,7 @@ enum class GBSFlywheelModuleState {
 
 class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel") : GBSRobotModule(context, hardware) {
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
+    private var debounce: Long = 0
 
     private lateinit var flywheelMotor: DcMotorEx
 
@@ -23,6 +28,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
                 ?: throw GBSHardwareMissingException(hardware)
 
             flywheelMotor = flywheel
+            debounce = System.currentTimeMillis()
 
             context.telemetry.addLine("[INIT]: GBSFlywheelModule initialized.")
             context.telemetry.update()
@@ -79,6 +85,17 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
             return Result.success(Unit)
         }
 
+        val EPSILON: Double = 10.0
+        context.telemetry.addLine("$power")
+        context.telemetry.addLine("${getMotorPower()}")
+        context.telemetry.addLine("${abs(power - getMotorPower())}, $EPSILON")
+        val now = System.currentTimeMillis()
+        if (abs(power - getMotorPower()) <= EPSILON && (now - debounce) >= 5000) {
+            context.gamepads.gamepad2.rumble(1000)
+            context.gamepads.gamepad1.rumble(1000)
+            debounce = System.currentTimeMillis()
+        }
+
         setMotorPower(power)
         return Result.success(Unit)
     }
@@ -96,5 +113,9 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     fun setMotorPower(power: Double): Result<Unit> {
         flywheelMotor.velocity = power.toDouble()
         return Result.success(Unit)
+    }
+
+    fun getMotorPower(): Double {
+        return flywheelMotor.velocity.toDouble()
     }
 }
