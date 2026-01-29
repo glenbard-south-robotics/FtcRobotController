@@ -28,7 +28,7 @@ class GBSBaseModuleConfiguration {
 class GBSIntakeModuleConfiguration {
     val POWER = 1.0
     val FORWARD_COEFFICIENT = 1.0
-    val SLOW_MODE_COEFFICIENT = 0.5
+    val SLOW_MODE_COEFFICIENT = 0.75
     val REVERSE_COEFFICIENT = 0.5
 
     val LAUNCH_REVERSE_DURATION_MS = 1000L
@@ -41,4 +41,5 @@ class GBSIntakeModuleConfiguration {
 class GBSFlywheelModuleConfiguration {
     val FORWARD_TPS = 2250.0
     val AUTO_FORWARD_TPS = 2000.0
+    val AUTO_FAR_TPS = 2500.0
 }

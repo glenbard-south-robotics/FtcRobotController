@@ -21,10 +21,10 @@ import org.firstinspires.ftc.teamcode.roundPose3D
 import org.firstinspires.ftc.teamcode.subPose3D
 import kotlin.math.abs
 
-const val EPSILON_FORWARD_FIRE: Double = 0.5
+const val EPSILON_FAR_AUTO: Double = 0.5
 
-@Autonomous(name = "GBSForwardFireAuto")
-class GBSForwardFireAuto : LinearOpMode() {
+@Autonomous(name = "GBSFireFarAuto")
+class GBSFireFarAuto : LinearOpMode() {
     override fun runOpMode() {
 
         val context = GBSModuleContext(
@@ -50,18 +50,16 @@ class GBSForwardFireAuto : LinearOpMode() {
 
         flywheelModule.autoFlywheelOn()
 
-        baseModule.autoDrive(0.33, 48, 48, 5000, {
-            baseModule.autoDrive(0.33, 12, -12, 5000, {
-                Thread.sleep(3000)
-                intakeModule.autoIntakeForward(0.33)
-            })
+        baseModule.autoDrive(0.25, 0, -5, 5000, {
+            Thread.sleep(4000)
+            intakeModule.autoIntakeForward(0.33)
         })
 
-        val desiredPosition = Position(DistanceUnit.INCH, -32.0, -28.0, 15.0, 10)
-
-        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 130.0, 80.0, 8.0, 10)
-
-        val desiredRobotPose = Pose3D(desiredPosition, desiredOrientation)
+//        val desiredPosition = Position(DistanceUnit.INCH, -32.0, -28.0, 15.0, 10)
+//
+//        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 130.0, 80.0, 8.0, 10)
+//
+//        val desiredRobotPose = Pose3D(desiredPosition, desiredOrientation)
 
         while (opModeIsActive()) {
             check(baseModule.run().isSuccess)
@@ -78,20 +76,20 @@ class GBSForwardFireAuto : LinearOpMode() {
                 val currentPose = aprilTag.robotPose
 
 //                val errorX = desiredPosition.x - currentPose.position.x
-                val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
+//                val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
 
-                val Kp = 0.05
-                val turnPower = errorYaw * Kp
-
-                if (abs(errorYaw) > EPSILON_FORWARD_FIRE) {
-                    baseModule.autoPower(0.25, -turnPower, turnPower)
-                } else {
-                    baseModule.autoPower(0.0, 0.0, 0.0)
-                }
+//                val Kp = 0.05
+//                val turnPower = errorYaw * Kp
+//
+//                if (abs(errorYaw) > EPSILON_FAR_AUTO) {
+//                    baseModule.autoPower(0.25, -turnPower, turnPower)
+//                } else {
+//                    baseModule.autoPower(0.0, 0.0, 0.0)
+//                }
 
 //                val forwardPower = errorX * Kp
 //
-//                if (abs(errorX) > EPSILON_FORWARD_FIRE) {
+//                if (abs(errorX) > EPSILON) {
 //                    baseModule.autoPower(0.25, forwardPower, forwardPower)
 //                } else {
 //                    baseModule.autoPower(0.0, 0.0, 0.0)

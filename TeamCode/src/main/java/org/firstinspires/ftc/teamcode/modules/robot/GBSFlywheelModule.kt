@@ -57,7 +57,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
 
     private fun handleAutoState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
-        val power = -config.AUTO_FORWARD_TPS
+        val power = -config.AUTO_FAR_TPS
 
         setMotorPower(power)
         return Result.success(Unit)
@@ -111,6 +111,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     }
 
     fun setMotorPower(power: Double): Result<Unit> {
+
         flywheelMotor.velocity = power.toDouble()
         return Result.success(Unit)
     }

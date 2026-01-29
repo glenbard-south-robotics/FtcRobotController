@@ -147,12 +147,12 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
     }
 
     private fun setMotorPower(power: Double): Result<Unit> {
-        intakeMotor.power = power
+        intakeMotor.power = -power
         return Result.success(Unit)
     }
 
     private fun setMotorVelocity(velocity: Double): Result<Unit> {
-        intakeMotor.velocity = velocity
+        intakeMotor.velocity = -velocity
         return Result.success(Unit)
     }
 
