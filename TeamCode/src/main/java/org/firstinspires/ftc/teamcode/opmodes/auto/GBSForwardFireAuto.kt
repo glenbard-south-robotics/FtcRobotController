@@ -53,7 +53,7 @@ class GBSForwardFireAuto : LinearOpMode() {
         baseModule.autoDrive(0.33, 48, 48, 5000, {
             baseModule.autoDrive(0.33, 12, -12, 5000, {
                 Thread.sleep(3000)
-                intakeModule.autoIntakeForward(0.33)
+                intakeModule.autoIntakeForward(0.5)
             })
         })
 

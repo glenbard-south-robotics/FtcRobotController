@@ -52,7 +52,7 @@ class GBSFireFarAuto : LinearOpMode() {
 
         baseModule.autoDrive(0.25, 0, -5, 5000, {
             Thread.sleep(4000)
-            intakeModule.autoIntakeForward(0.33)
+            intakeModule.autoIntakeForward(0.5)
         })
 
 //        val desiredPosition = Position(DistanceUnit.INCH, -32.0, -28.0, 15.0, 10)
