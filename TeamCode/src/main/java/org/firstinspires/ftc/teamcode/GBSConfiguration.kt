@@ -41,5 +41,5 @@ class GBSIntakeModuleConfiguration {
 class GBSFlywheelModuleConfiguration {
     val FORWARD_TPS = 2250.0
     val AUTO_FORWARD_TPS = 2000.0
-    val AUTO_FAR_TPS = 2500.0
+    val AUTO_FAR_TPS = 2000.0
 }
