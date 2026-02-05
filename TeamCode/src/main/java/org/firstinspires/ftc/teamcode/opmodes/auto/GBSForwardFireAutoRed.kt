@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.robotcore.external.navigation.Position
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
+import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.magnitudePose3D
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
@@ -47,6 +48,8 @@ class GBSForwardFireAutoRed : LinearOpMode() {
         check(webcamModule2.initialize().isSuccess)
 
         waitForStart()
+
+        val flywheelConfig = GBSFlywheelModuleConfiguration()
 
         flywheelModule.autoFlywheelOn()
 

@@ -20,6 +20,8 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
     private var debounce: Long = 0
 
+    var autoTPS: Double = GBSFlywheelModuleConfiguration().AUTO_FORWARD_TPS
+
     private lateinit var flywheelMotor: DcMotorEx
 
     override fun initialize(): Result<Unit> {
@@ -57,7 +59,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
 
     private fun handleAutoState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
-        val power = -config.AUTO_FAR_TPS
+        val power = -this.autoTPS
 
         setMotorPower(power)
         return Result.success(Unit)

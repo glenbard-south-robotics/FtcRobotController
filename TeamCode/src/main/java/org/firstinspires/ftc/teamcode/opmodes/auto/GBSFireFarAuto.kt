@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.robotcore.external.navigation.Position
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
+import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.magnitudePose3D
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
@@ -48,6 +49,9 @@ class GBSFireFarAuto : LinearOpMode() {
 
         waitForStart()
 
+        val flywheelConfig = GBSFlywheelModuleConfiguration()
+
+        flywheelModule.autoTPS = flywheelConfig.AUTO_FAR_TPS
         flywheelModule.autoFlywheelOn()
 
         baseModule.autoDrive(0.25, 0, -5, 5000, {
@@ -67,6 +71,7 @@ class GBSFireFarAuto : LinearOpMode() {
             check(webcamModule2.run().isSuccess)
 
             telemetry.addLine("neue")
+            telemetry.addLine("${flywheelModule.autoTPS}")
             telemetry.addLine("${webcamModule.aprilTagDetections.size}")
             telemetry.addLine("${webcamModule2.aprilTagDetections.size}")
 
