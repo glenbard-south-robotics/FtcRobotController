@@ -51,15 +51,13 @@ class GBSFireFarAuto : LinearOpMode() {
         flywheelModule.autoFlywheelOn()
 
         baseModule.autoDrive(0.25, 0, -5, 5000, {
-            Thread.sleep(4000)
+            Thread.sleep(3000)
             intakeModule.autoIntakeForward(0.5)
         })
 
-//        val desiredPosition = Position(DistanceUnit.INCH, -32.0, -28.0, 15.0, 10)
-//
-//        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 130.0, 80.0, 8.0, 10)
-//
-//        val desiredRobotPose = Pose3D(desiredPosition, desiredOrientation)
+        val desiredPosition = Position(DistanceUnit.INCH, 37.9, -15.8, 13.5, 10)
+        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 76.9, 86.9, 39.0, 10)
+        val desiredRobotPose = Pose3D(desiredPosition, desiredOrientation)
 
         while (opModeIsActive()) {
             check(baseModule.run().isSuccess)
@@ -68,6 +66,7 @@ class GBSFireFarAuto : LinearOpMode() {
             check(webcamModule.run().isSuccess)
             check(webcamModule2.run().isSuccess)
 
+            telemetry.addLine("neue")
             telemetry.addLine("${webcamModule.aprilTagDetections.size}")
             telemetry.addLine("${webcamModule2.aprilTagDetections.size}")
 
@@ -75,25 +74,17 @@ class GBSFireFarAuto : LinearOpMode() {
                 val aprilTag = webcamModule2.aprilTagDetections.first()
                 val currentPose = aprilTag.robotPose
 
-//                val errorX = desiredPosition.x - currentPose.position.x
-//                val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
+                val errorX = desiredPosition.x - currentPose.position.x
+                val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
 
-//                val Kp = 0.05
-//                val turnPower = errorYaw * Kp
+                val Kp = 0.05
+                val turnPower = errorYaw * Kp
 //
-//                if (abs(errorYaw) > EPSILON_FAR_AUTO) {
-//                    baseModule.autoPower(0.25, -turnPower, turnPower)
-//                } else {
-//                    baseModule.autoPower(0.0, 0.0, 0.0)
-//                }
-
-//                val forwardPower = errorX * Kp
-//
-//                if (abs(errorX) > EPSILON) {
-//                    baseModule.autoPower(0.25, forwardPower, forwardPower)
-//                } else {
-//                    baseModule.autoPower(0.0, 0.0, 0.0)
-//                }
+                if (abs(errorYaw) > EPSILON_FAR_AUTO) {
+                    baseModule.autoPower(0.25, -turnPower, turnPower)
+                } else {
+                    baseModule.autoPower(0.0, 0.0, 0.0)
+                }
 
             }
 
