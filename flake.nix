@@ -11,6 +11,9 @@
         jdk17
         jdk8
         gradle
+        android-tools
+
+        just
       ];
 
       JAVA_HOME = pkgs.jdk17;
