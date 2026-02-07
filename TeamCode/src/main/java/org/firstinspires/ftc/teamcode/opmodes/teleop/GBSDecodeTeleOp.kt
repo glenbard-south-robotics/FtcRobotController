@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.test
+package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -10,11 +10,9 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 
 @Suppress("unused")
-@TeleOp(name = "GBSTestAllOp", group = "Tests")
-class GBSTestFlywheelAllOp : LinearOpMode() {
+@TeleOp(name = "GBSDecodeTeleOp", group = "TeleOp")
+class GBSDecodeTeleOp : LinearOpMode() {
     override fun runOpMode() {
-        val gamepad2 = this.gamepad2
-
         val context = GBSModuleContext(
             opMode = this,
             hardwareMap = this.hardwareMap,
@@ -26,11 +24,10 @@ class GBSTestFlywheelAllOp : LinearOpMode() {
         val intake = GBSIntakeModule(context)
         val flywheel = GBSFlywheelModule(context)
 
-        // Initialize modules, and make sure they succeeded
         check(base.initialize().isSuccess)
         check(intake.initialize().isSuccess)
         check(flywheel.initialize().isSuccess)
-        
+
         waitForStart()
 
         while (opModeIsActive()) {
@@ -43,4 +40,5 @@ class GBSTestFlywheelAllOp : LinearOpMode() {
             sleep(CYCLE_MS)
         }
     }
+
 }
