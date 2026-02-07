@@ -13,12 +13,7 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 @TeleOp(name = "GBSDecodeTeleOp", group = "TeleOp")
 class GBSDecodeTeleOp : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(
-            opMode = this,
-            hardwareMap = this.hardwareMap,
-            telemetry = this.telemetry,
-            gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
-        )
+        val context = GBSModuleContext(this)
 
         val base = GBSBaseModule(context)
         val intake = GBSIntakeModule(context)
@@ -34,8 +29,8 @@ class GBSDecodeTeleOp : LinearOpMode() {
             check(base.run().isSuccess)
             check(intake.run().isSuccess)
             check(flywheel.run().isSuccess)
-            telemetry.update()
 
+            telemetry.update()
             idle()
         }
     }

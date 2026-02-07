@@ -19,12 +19,7 @@ const val EPSILON_FAR_AUTO = 0.5
 @Autonomous(name = "GBSFarRed", group = "Red")
 class GBSFarRed : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(
-            opMode = this,
-            hardwareMap = this.hardwareMap,
-            telemetry = this.telemetry,
-            gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
-        )
+        val context = GBSModuleContext(this)
 
         val baseModule = GBSBaseModule(context)
         val flywheelModule = GBSFlywheelModule(context)

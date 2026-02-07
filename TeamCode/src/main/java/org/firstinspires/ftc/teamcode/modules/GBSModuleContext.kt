@@ -10,4 +10,11 @@ data class GBSModuleContext(
     val hardwareMap: HardwareMap,
     val telemetry: Telemetry,
     val gamepads: GBSGamepadPair
-)
+) {
+    constructor(opMode: LinearOpMode) : this(
+        opMode = opMode,
+        hardwareMap = opMode.hardwareMap,
+        telemetry = opMode.telemetry,
+        gamepads = GBSGamepadPair(opMode.gamepad1, opMode.gamepad2)
+    )
+}

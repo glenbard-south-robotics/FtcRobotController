@@ -13,14 +13,7 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 @TeleOp(name = "GBSTestAllOp", group = "Tests")
 class GBSTestAll : LinearOpMode() {
     override fun runOpMode() {
-        val gamepad2 = this.gamepad2
-
-        val context = GBSModuleContext(
-            opMode = this,
-            hardwareMap = this.hardwareMap,
-            telemetry = this.telemetry,
-            gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
-        )
+        val context = GBSModuleContext(this)
 
         val base = GBSBaseModule(context)
         val intake = GBSIntakeModule(context)
@@ -36,8 +29,8 @@ class GBSTestAll : LinearOpMode() {
             check(base.run().isSuccess)
             check(intake.run().isSuccess)
             check(flywheel.run().isSuccess)
-            telemetry.update()
 
+            telemetry.update()
             idle()
         }
     }

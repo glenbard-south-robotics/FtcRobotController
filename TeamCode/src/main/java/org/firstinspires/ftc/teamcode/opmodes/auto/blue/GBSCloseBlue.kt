@@ -18,12 +18,7 @@ const val EPSILON_FORWARD_FIRE: Double = 0.5
 @Autonomous(name = "GBSCloseBlue", group = "Blue")
 class GBSCloseBlue : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(
-            opMode = this,
-            hardwareMap = this.hardwareMap,
-            telemetry = this.telemetry,
-            gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
-        )
+        val context = GBSModuleContext(this)
 
         val baseModule = GBSBaseModule(context)
         val flywheelModule = GBSFlywheelModule(context)

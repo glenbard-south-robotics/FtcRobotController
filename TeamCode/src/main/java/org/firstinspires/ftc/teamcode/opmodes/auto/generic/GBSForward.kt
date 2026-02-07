@@ -10,12 +10,7 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 @Autonomous(name = "GBSForward", group = "Generic")
 class GBSForward : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(
-            opMode = this,
-            hardwareMap = this.hardwareMap,
-            telemetry = this.telemetry,
-            gamepads = GBSGamepadPair(this.gamepad1, this.gamepad2)
-        )
+        val context = GBSModuleContext(this)
 
         val baseModule = GBSBaseModule(context)
 
