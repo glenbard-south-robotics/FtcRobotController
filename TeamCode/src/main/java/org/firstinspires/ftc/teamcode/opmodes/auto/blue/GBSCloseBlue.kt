@@ -14,6 +14,7 @@ import kotlin.math.abs
 
 const val EPSILON_FORWARD_FIRE: Double = 0.5
 
+@Suppress("unused")
 @Autonomous(name = "GBSCloseBlue", group = "Blue")
 class GBSCloseBlue : LinearOpMode() {
     override fun runOpMode() {
@@ -35,7 +36,7 @@ class GBSCloseBlue : LinearOpMode() {
 
         baseModule.autoDrive(0.33, 48, 48, 5000, {
             baseModule.autoDrive(0.33, 12, -12, 5000, {
-                Thread.sleep(3000)
+                sleep(3000)
                 intakeModule.autoIntakeForward(0.5)
             })
         })
@@ -54,8 +55,8 @@ class GBSCloseBlue : LinearOpMode() {
 
                 val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
 
-                val Kp = 0.05
-                val turnPower = errorYaw * Kp
+                val kP = 0.05
+                val turnPower = errorYaw * kP
 
                 if (abs(errorYaw) > EPSILON_FORWARD_FIRE) {
                     baseModule.autoPower(0.25, -turnPower, turnPower)
@@ -65,6 +66,7 @@ class GBSCloseBlue : LinearOpMode() {
             }
 
             telemetry.update()
+            idle()
         }
 
 

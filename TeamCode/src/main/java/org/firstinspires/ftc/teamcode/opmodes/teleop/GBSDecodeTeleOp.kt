@@ -37,7 +37,6 @@ class GBSDecodeTeleOp : LinearOpMode() {
             telemetry.update()
 
             idle()
-            sleep(CYCLE_MS)
         }
     }
 

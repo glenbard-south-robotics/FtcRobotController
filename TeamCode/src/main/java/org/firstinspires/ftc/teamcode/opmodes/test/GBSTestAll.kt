@@ -26,7 +26,6 @@ class GBSTestAll : LinearOpMode() {
         val intake = GBSIntakeModule(context)
         val flywheel = GBSFlywheelModule(context)
 
-        // Initialize modules, and make sure they succeeded
         check(base.initialize().isSuccess)
         check(intake.initialize().isSuccess)
         check(flywheel.initialize().isSuccess)
@@ -40,7 +39,6 @@ class GBSTestAll : LinearOpMode() {
             telemetry.update()
 
             idle()
-            sleep(CYCLE_MS)
         }
     }
 }
