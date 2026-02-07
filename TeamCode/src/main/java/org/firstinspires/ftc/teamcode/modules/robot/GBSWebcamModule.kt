@@ -22,14 +22,19 @@ class GBSWebcamModule(context: GBSModuleContext, hardware: String) : GBSRobotMod
     override fun initialize(): Result<Unit> {
         return try {
             aprilTagProcessor = AprilTagProcessor.Builder().build()
-
             aprilTagProcessor.setDecimation(2.0F)
 
-            val camera = context.hardwareMap.tryGet(WebcamName::class.java, hardware)
-                ?: throw GBSHardwareMissingException(hardware)
+            this.tryGetHardware<WebcamName>(hardware).fold({
+                visionPortal =
+                    VisionPortal.Builder()
+                        .setCamera(it)
+                        .setLiveViewContainerId(0)
+                        .addProcessor(aprilTagProcessor)
+                        .build()
 
-            visionPortal =
-                VisionPortal.Builder().setCamera(camera).setLiveViewContainerId(0).addProcessor(aprilTagProcessor).build()
+            }, {
+                throw it
+            })
 
             Result.success(Unit)
         } catch (e: Exception) {

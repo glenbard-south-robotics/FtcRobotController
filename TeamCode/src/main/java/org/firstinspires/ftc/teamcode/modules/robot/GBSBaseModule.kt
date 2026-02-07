@@ -21,17 +21,17 @@ enum class GBSBaseModuleState {
 }
 
 class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSRobotModule(context, hardware) {
-    private var autoDriveTimer: ElapsedTime = ElapsedTime()
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
+    private var fineAdjustMode: Boolean = false
 
+    /// MOTORS ///
     private lateinit var leftDrive: DcMotor
     private lateinit var rightDrive: DcMotor
 
+    /// AUTO STATE ///
     private var autoSpeed: Double = 0.0
+    private var autoDriveTimer: ElapsedTime = ElapsedTime()
     private var autoTimeoutMs: Int = 0
-
-    private var fineAdjustMode: Boolean = false
-
     private val autoDriveCallbacks: MutableList<() -> Unit> = ArrayList()
 
 
