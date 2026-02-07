@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
-import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.GBSIntakeModuleConfiguration
+import org.firstinspires.ftc.teamcode.modules.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule

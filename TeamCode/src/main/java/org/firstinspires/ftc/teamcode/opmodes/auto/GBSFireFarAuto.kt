@@ -3,23 +3,17 @@ package org.firstinspires.ftc.teamcode.opmodes.auto
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.robotcore.external.navigation.Position
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
-import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
+import org.firstinspires.ftc.teamcode.modules.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
-import org.firstinspires.ftc.teamcode.magnitudePose3D
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSWebcamModule
-import org.firstinspires.ftc.teamcode.roundPose3D
-import org.firstinspires.ftc.teamcode.subPose3D
 import kotlin.math.abs
 
 const val EPSILON_FAR_AUTO: Double = 0.5

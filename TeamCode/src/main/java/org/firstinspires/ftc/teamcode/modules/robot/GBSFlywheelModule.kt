@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
+import org.firstinspires.ftc.teamcode.modules.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule

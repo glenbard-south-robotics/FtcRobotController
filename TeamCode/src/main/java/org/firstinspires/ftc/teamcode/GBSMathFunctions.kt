@@ -4,7 +4,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.robotcore.external.navigation.Position
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
-import java.util.ArrayList
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.round
