@@ -15,8 +15,8 @@ import kotlin.math.abs
 const val EPSILON_FORWARD_FIRE: Double = 0.5
 
 @Suppress("unused")
-@Autonomous(name = "GBSCloseBlue.kt", group = "Blue")
-class GBSCloseBlue : LinearOpMode() {
+@Autonomous(name = "GBSCloseRed", group = "Red")
+class GBSCloseRed : LinearOpMode() {
     override fun runOpMode() {
         val context = GBSModuleContext(
             opMode = this,

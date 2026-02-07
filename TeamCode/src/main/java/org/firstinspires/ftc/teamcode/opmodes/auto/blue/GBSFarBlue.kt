@@ -17,7 +17,7 @@ import kotlin.math.abs
 const val EPSILON_FAR_AUTO = 0.5
 
 @Suppress("unused")
-@Autonomous(name = "GBSFarBlue")
+@Autonomous(name = "GBSFarBlue", group = "Blue")
 class GBSFarBlue : LinearOpMode() {
     override fun runOpMode() {
         val context = GBSModuleContext(
