@@ -17,9 +17,6 @@ object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
     override val BASE_POWER_COEFFICIENT = 0.75
     override val FINE_ADJUST_POWER_COEFFICIENT = 0.33
 
-    override val STICK_THRESHOLD = 0.2
-    override val FINE_ADJUST_STICK_THRESHOLD = 0.05
-
     override val BINARY_BINDINGS = mapOf(
         GBSModuleActions.BASE_SLOW_TOGGLE to GBSBinaryBinding(
             GBSGamepadID.GAMEPAD_ONE, GBSBinaryAction.CROSS
@@ -27,16 +24,16 @@ object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
     )
     override val ANALOG_BINDINGS = mapOf(
         GBSAnalogAction.LEFT_STICK_X to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_X
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_X, deadZone = 0.2F
         ),
         GBSAnalogAction.LEFT_STICK_Y to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_Y
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_Y, deadZone = 0.2F
         ),
         GBSAnalogAction.RIGHT_STICK_X to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_X
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_X, deadZone = 0.2F
         ),
         GBSAnalogAction.RIGHT_STICK_Y to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_Y
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_Y, deadZone = 0.2F
         ),
     )
 }

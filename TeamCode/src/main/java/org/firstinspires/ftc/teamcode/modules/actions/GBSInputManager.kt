@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.actions
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
 
-data class GBSInputManager(private val gamepadPair: GBSGamepadPair) {
+data class GBSInputManager(val gamepadPair: GBSGamepadPair) {
     /**
      * Get the gamepad associated with this GBSGamepadID
      * @see GBSGamepadID
@@ -71,22 +71,25 @@ data class GBSInputManager(private val gamepadPair: GBSGamepadPair) {
         val v = raw.coerceIn(-1f, 1f)
         return if (kotlin.math.abs(v) < binding.deadZone) 0f else v * binding.scale
     }
+}
 
-    /**
-     * Check if the given GBSModuleAction was pressed
-     * @return `false` if the binding does not exist
-     */
-    fun GBSModuleActions.wasPressed(config: IGBSRobotModuleConfiguration): Boolean {
-        val binding = config.BINARY_BINDINGS[this] ?: return false
-        return binaryWasPressed(binding)
-    }
+fun GBSAnalogAction.read(
+    inputManager: GBSInputManager, config: IGBSRobotModuleConfiguration
+): Float {
+    val binding = config.ANALOG_BINDINGS[this] ?: return 0f
+    return inputManager.readAnalog(binding)
+}
 
-    /**
-     * Get the value of the GBSAnalogAction
-     * @return `0f` if the binding does not exist
-     */
-    fun GBSAnalogAction.read(config: IGBSRobotModuleConfiguration): Float {
-        val binding = config.ANALOG_BINDINGS[this] ?: return 0f
-        return readAnalog(binding)
-    }
+fun GBSModuleActions.wasPressed(
+    inputManager: GBSInputManager, config: IGBSRobotModuleConfiguration
+): Boolean {
+    val binding = config.BINARY_BINDINGS[this] ?: return false
+    return inputManager.binaryWasPressed(binding)
+}
+
+fun GBSModuleActions.wasReleased(
+    inputManager: GBSInputManager, config: IGBSRobotModuleConfiguration
+): Boolean {
+    val binding = config.BINARY_BINDINGS[this] ?: return false
+    return inputManager.binaryWasReleased(binding)
 }

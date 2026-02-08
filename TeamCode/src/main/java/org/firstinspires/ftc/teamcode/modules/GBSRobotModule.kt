@@ -9,14 +9,13 @@ abstract class GBSRobotModule(
     protected val hardware: String?
 ) {
     /**
-     * Enable debug telemetry for this moduke
+     * Enable debug telemetry for this module
      */
     open val enableDebugTelemetry: Boolean = false
 
     open fun initialize(): Result<Unit> = Result.success(Unit)
     abstract fun run(): Result<Unit>
     open fun shutdown(): Result<Unit> = Result.success(Unit)
-
 
     /**
      * @param hardwareId The name of the hardware device as specified in the Driver Hub

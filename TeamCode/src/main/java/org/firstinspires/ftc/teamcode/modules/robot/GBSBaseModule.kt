@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.config.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
+import org.firstinspires.ftc.teamcode.modules.actions.read
+import org.firstinspires.ftc.teamcode.modules.actions.wasPressed
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -21,16 +24,15 @@ enum class GBSBaseModuleState {
 @Suppress("unused")
 class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") :
     GBSRobotModule(context, hardware) {
+
     override val enableDebugTelemetry: Boolean = GBSBaseModuleConfiguration.DEBUG_TELEMETRY
 
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
     private var fineAdjustMode: Boolean = false
 
-    /// MOTORS ///
     private lateinit var leftDrive: DcMotor
     private lateinit var rightDrive: DcMotor
 
-    /// AUTO STATE ///
     private var autoSpeed: Double = 0.0
     private var autoDriveTimer: ElapsedTime = ElapsedTime()
     private var autoTimeoutMs: Int = 0
@@ -59,112 +61,90 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
 
     override fun shutdown(): Result<Unit> {
         setMotorPowers(0.0, 0.0)
-        opModeContext.telemetry.addLine("[STDN]: GBSBaseModule shutdown.")
-        opModeContext.telemetry.update()
         return Result.success(Unit)
     }
 
-    /**
-     * Get the manual stick threshold, depending on `fineAdjustMode`
-     */
-    fun getManualStickThreshold(): Double {
-        return if (this.fineAdjustMode) GBSBaseModuleConfiguration.STICK_THRESHOLD else GBSBaseModuleConfiguration.FINE_ADJUST_STICK_THRESHOLD
-    }
+    private fun getManualPowerCoefficient(): Double =
+        if (fineAdjustMode) GBSBaseModuleConfiguration.FINE_ADJUST_POWER_COEFFICIENT
+        else GBSBaseModuleConfiguration.BASE_POWER_COEFFICIENT
 
     /**
-     * Check if the `y` values of any of the gamepad's sticks are over the `STICK_THRESHOLD`
+     * Read the configured analog value for the given action
+     * This resolves the binding in the configuration, so remaps apply automatically
      */
-    fun sticksYOverThreshold(gamepad: Gamepad): Boolean {
-        val threshold = getManualStickThreshold()
-        return abs(-gamepad.left_stick_y) > threshold || abs(-gamepad.right_stick_y) > threshold
-    }
+    private fun readConfiguredAnalog(action: GBSAnalogAction): Double =
+        action.read(opModeContext.inputManager, GBSBaseModuleConfiguration).toDouble()
 
     /**
-     * Get the manual power coefficient, depending on `fineAdjustMode`
+     * Toggle fine adjust using the configured binary binding
      */
-    fun getManualPowerCoefficient(): Double {
-        return if (this.fineAdjustMode) GBSBaseModuleConfiguration.FINE_ADJUST_POWER_COEFFICIENT else GBSBaseModuleConfiguration.BASE_POWER_COEFFICIENT
-    }
-
-    /**
-     * Enable or disables `fineAdjustMode` depending if the respective buttons are pressed
-     * Rumbles the controller in different durations for haptic feedback
-     */
-    fun toggleFineAdjustMode(gamepad: Gamepad) {
-        if (gamepad.crossWasPressed()) {
+    private fun handleFineAdjustToggle() {
+        if (GBSModuleActions.BASE_SLOW_TOGGLE.wasPressed(
+                opModeContext.inputManager, GBSBaseModuleConfiguration
+            )
+        ) {
             fineAdjustMode = !fineAdjustMode
-            gamepad.rumble(250)
+
+            opModeContext.inputManager.gamepadPair.gamepad1.rumble(250)
         }
     }
 
-    private fun handleIdleState(): Result<Unit> {
-        val gamepad1 = opModeContext.gamepads.gamepad1
+    private fun sticksOverThreshold(): Boolean {
+        val leftY = readConfiguredAnalog(GBSAnalogAction.LEFT_STICK_Y)
+        val rightY = readConfiguredAnalog(GBSAnalogAction.RIGHT_STICK_Y)
+        return leftY != 0.0 || rightY != 0.0
+    }
 
-        if (sticksYOverThreshold(gamepad1)) {
+
+    private fun handleIdleState(): Result<Unit> {
+        if (sticksOverThreshold()) {
             state = GBSBaseModuleState.MANUAL
         } else {
             setMotorPowers(0.0, 0.0)
         }
 
+        handleFineAdjustToggle()
         return Result.success(Unit)
     }
 
     private fun handleManualState(): Result<Unit> {
-        val gamepad1 = opModeContext.gamepads.gamepad1
+        val leftY = readConfiguredAnalog(GBSAnalogAction.LEFT_STICK_Y)
+        val rightY = readConfiguredAnalog(GBSAnalogAction.RIGHT_STICK_Y)
 
-        val leftStickY = -gamepad1.left_stick_y.toDouble()
-        val rightStickY = -gamepad1.right_stick_y.toDouble()
+        handleFineAdjustToggle()
 
-        val stickThreshold = getManualStickThreshold()
-
-        toggleFineAdjustMode(gamepad1)
-
-        // Transition to `idle` if both sticks are lower than the threshold needed to make the motors move
-        if (abs(leftStickY) <= stickThreshold && abs(rightStickY) <= stickThreshold) {
+        if (leftY == 0.0 && rightY == 0.0) {
             state = GBSBaseModuleState.IDLE
             setMotorPowers(0.0, 0.0)
             return Result.success(Unit)
         }
 
-        val powerCoefficient = getManualPowerCoefficient()
-
-        val leftPower = if (abs(leftStickY) > stickThreshold) leftStickY * powerCoefficient else 0.0
-        val rightPower =
-            if (abs(rightStickY) > stickThreshold) rightStickY * powerCoefficient else 0.0
+        val coefficient = getManualPowerCoefficient()
+        val leftPower = leftY * coefficient
+        val rightPower = rightY * coefficient
 
         return setMotorPowers(leftPower, rightPower)
     }
 
-    /**
-     * Handle `auto` state. Transitions to `idle` if both motors are stopped, or the timeout is exceeded.
-     */
     private fun handleAutoDriveState(): Result<Unit> {
         if ((!leftDrive.isBusy && !rightDrive.isBusy) || autoDriveTimer.milliseconds() >= autoTimeoutMs) {
             setMotorPowers(0.0, 0.0)
             leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
             state = GBSBaseModuleState.IDLE
-
             autoDriveCallbacks.forEach { it() }
-
-            return Result.success(Unit)
         }
         return Result.success(Unit)
     }
 
-    fun setMotorPowers(leftPower: Double, rightPower: Double): Result<Unit> {
-        try {
-            leftDrive.power = -leftPower
-            rightDrive.power = -rightPower
-        } catch (e: Exception) {
-            return Result.failure(e)
-        }
-        return Result.success(Unit)
+    fun setMotorPowers(leftPower: Double, rightPower: Double): Result<Unit> = try {
+        leftDrive.power = -leftPower
+        rightDrive.power = -rightPower
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
-    /**
-     * Attempt to drive so many `leftDistanceInches` and `rightDistanceInches`, errors if we aren't in `idle`
-     */
     fun autoDrive(
         speed: Double,
         leftDistanceInches: Int,
@@ -172,18 +152,15 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
         timeoutMs: Int = 5000,
         vararg callbacks: () -> Unit
     ): Result<Boolean> {
-        if (state != GBSBaseModuleState.IDLE) {
-            return Result.failure(GBSInvalidStateException("Cannot autoDrive while not idle"))
-        }
+        if (state != GBSBaseModuleState.IDLE) return Result.failure(
+            GBSInvalidStateException("Cannot autoDrive while not idle")
+        )
 
-        try {
+        return try {
             autoDriveTimer.reset()
-
             state = GBSBaseModuleState.AUTO_DRIVE
-
             autoSpeed = speed
             autoTimeoutMs = timeoutMs
-
             autoDriveCallbacks.clear()
             autoDriveCallbacks.addAll(callbacks)
 
@@ -198,29 +175,20 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
 
             leftDrive.power = abs(autoSpeed)
             rightDrive.power = abs(autoSpeed)
-            return Result.success(false)
+            Result.success(false)
         } catch (e: Exception) {
-            return Result.failure(e)
+            Result.failure(e)
         }
     }
 
-    /**
-     * Set the power of the motors in auto, uses RUN_TO_POSITION with a calculated distance
-     */
-    fun autoPower(
-        speed: Double,
-        leftPower: Double,
-        rightPower: Double,
-    ): Result<Boolean> {
-        if (state != GBSBaseModuleState.IDLE) {
-            return Result.failure(GBSInvalidStateException("Cannot autoPower while not idle"))
-        }
+    fun autoPower(speed: Double, leftPower: Double, rightPower: Double): Result<Boolean> {
+        if (state != GBSBaseModuleState.IDLE) return Result.failure(
+            GBSInvalidStateException("Cannot autoPower while not idle")
+        )
 
-        try {
+        return try {
             autoDriveTimer.reset()
-
             state = GBSBaseModuleState.AUTO_DRIVE
-
             autoSpeed = speed
 
             leftDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -234,9 +202,9 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
 
             leftDrive.power = abs(autoSpeed)
             rightDrive.power = abs(autoSpeed)
-            return Result.success(false)
+            Result.success(false)
         } catch (e: Exception) {
-            return Result.failure(e)
+            Result.failure(e)
         }
     }
 
