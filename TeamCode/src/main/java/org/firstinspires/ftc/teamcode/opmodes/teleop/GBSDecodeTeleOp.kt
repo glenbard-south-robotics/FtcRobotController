@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.modules.CYCLE_MS
-import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule

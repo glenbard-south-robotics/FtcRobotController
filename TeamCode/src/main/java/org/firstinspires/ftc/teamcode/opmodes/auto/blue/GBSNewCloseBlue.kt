@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
+import org.firstinspires.ftc.teamcode.GBSCloseBlueConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
@@ -33,29 +32,28 @@ class GBSNewCloseBlue : GBSOpMode() {
         val intake = this.getModule<GBSIntakeModule>("intake")
         val webcam2 = this.getModule<GBSWebcamModule>("webcam2")
 
+        val config = GBSCloseBlueConfiguration()
+
         flywheel.autoFlywheelOn()
 
-        base.autoDrive(0.33, 48, 48, 5000, {
-            base.autoDrive(0.33, 12, -12, 5000, {
-                sleep(3000)
-                intake.autoIntakeForward(0.5)
+        base.autoDrive(
+            config.BASE_POWER, config.MOTOR_DISTANCES.first, config.MOTOR_DISTANCES.second, 5000, {
+                base.autoDrive(config.BASE_POWER, 12, -12, 5000, {
+                    sleep(config.SPINUP_MS)
+                    intake.autoIntakeForward(config.INTAKE_POWER)
+                })
             })
-        })
-
-        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 130.0, 80.0, 8.0, 10)
 
         if (webcam2.aprilTagDetections.isNotEmpty()) {
             val aprilTag = webcam2.aprilTagDetections.first()
             val currentPose = aprilTag.robotPose
 
+            val errorYaw = config.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
 
-            val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
+            val turnPower = errorYaw * config.PID_K_P
 
-            val kP = 0.05
-            val turnPower = errorYaw * kP
-
-            if (abs(errorYaw) > EPSILON_FORWARD_FIRE) {
-                base.autoPower(0.25, -turnPower, turnPower)
+            if (abs(errorYaw) > config.ERROR_EPSILON) {
+                base.autoPower(config.ERROR_CORRECTION_SPEED, -turnPower, turnPower)
             } else {
                 base.autoPower(0.0, 0.0, 0.0)
             }

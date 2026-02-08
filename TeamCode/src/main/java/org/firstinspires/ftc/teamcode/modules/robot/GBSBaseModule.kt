@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.modules.GBSBaseModuleConfiguration
+import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
@@ -33,7 +33,6 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
     private var autoDriveTimer: ElapsedTime = ElapsedTime()
     private var autoTimeoutMs: Int = 0
     private val autoDriveCallbacks: MutableList<() -> Unit> = ArrayList()
-
 
     override fun initialize(): Result<Unit> {
         return try {

@@ -1,4 +1,4 @@
-build-and-deploy: build-debug deploy-debug
+dev: build-debug deploy-debug
 
 build-debug:
     gradle assembleDebug

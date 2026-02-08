@@ -2,17 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
-import org.firstinspires.ftc.teamcode.GBSGamepadPair
+import org.firstinspires.ftc.teamcode.GBSCloseBlueConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSWebcamModule
 import kotlin.math.abs
-
-const val EPSILON_FORWARD_FIRE: Double = 0.5
 
 @Suppress("unused")
 @Autonomous(name = "GBSCloseBlue", group = "Blue")
@@ -27,16 +23,22 @@ class GBSCloseBlue : LinearOpMode() {
 
         waitForStart()
 
+        val config = GBSCloseBlueConfiguration()
+
+        flywheelModule.setAutoVelocity(config.FLYWHEEL_VELOCITY)
         flywheelModule.autoFlywheelOn()
 
-        baseModule.autoDrive(0.33, 48, 48, 5000, {
-            baseModule.autoDrive(0.33, 12, -12, 5000, {
-                sleep(3000)
-                intakeModule.autoIntakeForward(0.5)
+        baseModule.autoDrive(
+            config.BASE_POWER,
+            config.MOTOR_DISTANCES.first,
+            config.MOTOR_DISTANCES.second,
+            5000,
+            {
+                baseModule.autoDrive(config.BASE_POWER, 12, -12, 5000, {
+                    sleep(config.SPINUP_MS)
+                    intakeModule.autoIntakeForward(config.INTAKE_POWER)
+                })
             })
-        })
-
-        val desiredOrientation = YawPitchRollAngles(AngleUnit.DEGREES, 130.0, 80.0, 8.0, 10)
 
         while (opModeIsActive()) {
             check(baseModule.run().isSuccess)
@@ -48,13 +50,12 @@ class GBSCloseBlue : LinearOpMode() {
                 val aprilTag = webcamModule2.aprilTagDetections.first()
                 val currentPose = aprilTag.robotPose
 
-                val errorYaw = desiredOrientation.yaw - currentPose.orientation.yaw
+                val errorYaw = config.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
 
-                val kP = 0.05
-                val turnPower = errorYaw * kP
+                val turnPower = errorYaw * config.PID_K_P
 
-                if (abs(errorYaw) > EPSILON_FORWARD_FIRE) {
-                    baseModule.autoPower(0.25, -turnPower, turnPower)
+                if (abs(errorYaw) > config.ERROR_EPSILON) {
+                    baseModule.autoPower(config.ERROR_CORRECTION_SPEED, -turnPower, turnPower)
                 } else {
                     baseModule.autoPower(0.0, 0.0, 0.0)
                 }
@@ -63,7 +64,6 @@ class GBSCloseBlue : LinearOpMode() {
             telemetry.update()
             idle()
         }
-
 
         flywheelModule.autoFlywheelOff()
         intakeModule.autoIntakeStop()

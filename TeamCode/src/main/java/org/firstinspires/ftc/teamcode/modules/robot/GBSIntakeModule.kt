@@ -1,25 +1,21 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.modules.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
+import org.firstinspires.ftc.teamcode.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 
 enum class GBSIntakeModuleState {
-    IDLE,
-    FORWARD,
-    REVERSE,
-    LAUNCHING
+    IDLE, FORWARD, REVERSE
 }
 
-class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor") : GBSRobotModule(context, hardware) {
+class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor") :
+    GBSRobotModule(context, hardware) {
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
     private lateinit var intakeMotor: DcMotorEx
     private var slowMode: Boolean = true
-
-    private var launchStartTimeMs: Long = 0
 
     override fun initialize(): Result<Unit> {
         return try {
@@ -28,37 +24,21 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
 
             intakeMotor = intake
 
-            context.telemetry.addLine("[INIT]: GBSIntakeModule initialized.")
-            context.telemetry.update()
             Result.success(Unit)
         } catch (e: Exception) {
-            context.telemetry.addLine("[ERR] An exception was raised in GBSIntakeModule::init: ${e.message}")
-            context.telemetry.update()
             Result.failure(e)
         }
-    }
-
-    fun startLaunch(): Result<Unit> {
-        if (state == GBSIntakeModuleState.IDLE) {
-            state = GBSIntakeModuleState.LAUNCHING
-            launchStartTimeMs = context.opMode.runtime.toLong()
-            context.telemetry.addLine("[INTAKE]: Launch sequence started.")
-        }
-        return Result.success(Unit)
     }
 
     override fun run(): Result<Unit> {
         return when (state) {
             GBSIntakeModuleState.IDLE -> handleIdleState()
-            GBSIntakeModuleState.LAUNCHING -> handleLaunchState()
             else -> handleRunningState()
         }
     }
 
     override fun shutdown(): Result<Unit> {
         setMotorPower(0.0)
-        context.telemetry.addLine("[STDN]: GBSIntakeModule shutdown.")
-        context.telemetry.update()
         return Result.success(Unit)
     }
 
@@ -71,7 +51,6 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
                 return Result.success(Unit)
             }
 
-            // If IDLE or REVERSE, goto FORWARD
             state = GBSIntakeModuleState.FORWARD
             setMotorPower(0.0)
         }
@@ -82,7 +61,6 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
                 return Result.success(Unit)
             }
 
-            // If IDLE or FORWARD, goto REVERSE
             state = GBSIntakeModuleState.REVERSE
             setMotorPower(0.0)
         }
@@ -102,7 +80,8 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
 
     private fun handleRunningState(): Result<Unit> {
         val config = GBSIntakeModuleConfiguration()
-        val coefficient: Double = if (state == GBSIntakeModuleState.FORWARD) config.FORWARD_COEFFICIENT else config.REVERSE_COEFFICIENT;
+        val coefficient: Double =
+            if (state == GBSIntakeModuleState.FORWARD) config.FORWARD_COEFFICIENT else config.REVERSE_COEFFICIENT;
         val gamepad2 = context.gamepads.gamepad2
 
         val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
@@ -116,7 +95,6 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
                 return Result.success(Unit)
             }
 
-            // If IDLE or REVERSE, goto FORWARD
             state = GBSIntakeModuleState.FORWARD
             setMotorPower(0.0)
         }
@@ -127,7 +105,6 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
                 return Result.success(Unit)
             }
 
-            // If IDLE or FORWARD, goto REVERSE
             state = GBSIntakeModuleState.REVERSE
             setMotorPower(0.0)
         }
@@ -145,58 +122,49 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
         return Result.success(Unit)
     }
 
+    /**
+     * Set the motor power to -power
+     * TODO: Create a config key for this negative coefficient
+     * @param power The target intake power
+     */
     private fun setMotorPower(power: Double): Result<Unit> {
         intakeMotor.power = -power
         return Result.success(Unit)
     }
 
+    /**
+     * Set the motor velocity to -velocity
+     * TODO: Create a config key for this negative coefficient
+     * @param velocity The target intake velocity
+     */
     private fun setMotorVelocity(velocity: Double): Result<Unit> {
         intakeMotor.velocity = -velocity
         return Result.success(Unit)
     }
 
-
-    private fun handleLaunchState(): Result<Unit> {
-        val currentTimeMs = context.opMode.runtime.toLong()
-        val elapsedTimeMs = currentTimeMs - launchStartTimeMs
-        val config = GBSIntakeModuleConfiguration()
-
-        if (elapsedTimeMs < config.LAUNCH_REVERSE_DURATION_MS) {
-            val power = config.POWER * config.REVERSE_COEFFICIENT
-            setMotorPower(power)
-            context.telemetry.addData("[INTAKE/LAUNCH]", "REVERSE (%.2f/%.2f sec)",
-                elapsedTimeMs / 1000.0, config.LAUNCH_REVERSE_DURATION_MS / 1000.0)
-        } else if (elapsedTimeMs < config.LAUNCH_REVERSE_DURATION_MS + config.LAUNCH_FORWARD_DURATION_MS) {
-            val power = config.POWER * config.LAUNCH_FORWARD_COEFFICIENT
-            setMotorPower(power)
-            context.telemetry.addData(
-                "[INTAKE/LAUNCH]",
-                "FAST FORWARD (%.2f/%.2f sec)",
-                (elapsedTimeMs -config. LAUNCH_REVERSE_DURATION_MS) / 1000.0,
-                config.LAUNCH_FORWARD_DURATION_MS / 1000.0
-            )
-        } else {
-            context.telemetry.addLine("[INTAKE/LAUNCH]: Launch sequence complete. Resuming FORWARD.")
-
-            state = GBSIntakeModuleState.FORWARD
-        }
-
-        return Result.success(Unit)
-    }
-
-    fun autoIntakeForward(speed: Double): Result<Unit> {
+    /**
+     * Transitions to FORWARD and sets the motor velocity to velocity
+     * @param velocity The target intake velocity
+     */
+    fun autoIntakeForward(velocity: Double): Result<Unit> {
         state = GBSIntakeModuleState.FORWARD
-        return setMotorVelocity(speed)
+        return setMotorVelocity(velocity)
     }
 
-    fun autoIntakeReverse(speed: Double): Result<Unit> {
+    /**
+     * Transitions to REVERSE and sets the motor velocity to velocity
+     * @param velocity The target intake velocity
+     */
+    fun autoIntakeReverse(velocity: Double): Result<Unit> {
         state = GBSIntakeModuleState.REVERSE
-        return setMotorVelocity(-speed)
+        return setMotorVelocity(-velocity)
     }
 
+    /**
+     * Turn off the intake in AUTO, transitions to IDLE and sets the motor velocity to 0
+     */
     fun autoIntakeStop(): Result<Unit> {
         state = GBSIntakeModuleState.IDLE
         return setMotorVelocity(0.0)
     }
-
 }

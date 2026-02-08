@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.modules.GBSFlywheelModuleConfiguration
+import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
+import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 
 import kotlin.math.abs
 
 enum class GBSFlywheelModuleState {
-    IDLE,
-    FORWARD,
-    AUTO,
+    IDLE, FORWARD, AUTO,
 }
 
-class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel") : GBSRobotModule(context, hardware) {
+class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel") :
+    GBSRobotModule(context, hardware) {
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
     private var debounce: Long = 0
 
-    var autoTPS: Double = GBSFlywheelModuleConfiguration().AUTO_FORWARD_TPS
+    private var autoVelocity: Double? = null
 
     private lateinit var flywheelMotor: DcMotorEx
 
@@ -30,12 +30,8 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
             flywheelMotor = flywheel
             debounce = System.currentTimeMillis()
 
-            context.telemetry.addLine("[INIT]: GBSFlywheelModule initialized.")
-            context.telemetry.update()
             Result.success(Unit)
         } catch (e: Exception) {
-            context.telemetry.addLine("[ERR] An exception was raised in GBSFlywheelModule::init: ${e.message}")
-            context.telemetry.update()
             Result.failure(e)
         }
     }
@@ -49,17 +45,22 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     }
 
     override fun shutdown(): Result<Unit> {
-        setMotorPower(0.0)
-        context.telemetry.addLine("[STDN]: GBSFlywheelModule shutdown.")
-        context.telemetry.update()
+        setMotorVelocity(0.0)
         return Result.success(Unit)
     }
 
+    /**
+     * @throws GBSInvalidStateException when autoVelocity is null
+     */
     private fun handleAutoState(): Result<Unit> {
-        val config = GBSFlywheelModuleConfiguration()
-        val power = -this.autoTPS
+        if (this.autoVelocity == null) {
+            throw GBSInvalidStateException("Cannot setMotorPower when autoVelocity is null!")
+        }
 
-        setMotorPower(power)
+        // This is safe since we checked if it was null above
+        val velocity = -this.autoVelocity!!
+
+        setMotorVelocity(velocity)
         return Result.success(Unit)
     }
 
@@ -71,52 +72,72 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
             return Result.success(Unit)
         }
 
-        setMotorPower(0.0)
+        setMotorVelocity(0.0)
         return Result.success(Unit)
     }
 
+    // TODO: Add slow mode to TeleOp
     private fun handleRunningState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
         val gamepad2 = context.gamepads.gamepad2
-        val power = -config.FORWARD_TPS
+
+        val velocity = -config.TELEOP_VELOCITY
 
         if (gamepad2.triangleWasPressed()) {
             state = GBSFlywheelModuleState.IDLE
             return Result.success(Unit)
         }
 
-        val EPSILON: Double = 10.0
-        context.telemetry.addLine("$power")
-        context.telemetry.addLine("${getMotorPower()}")
-        context.telemetry.addLine("${abs(power - getMotorPower())}, $EPSILON")
         val now = System.currentTimeMillis()
-        if (abs(power - getMotorPower()) <= EPSILON && (now - debounce) >= 5000) {
+
+        // Rumble the gamepads when the flywheel is at its target speed and we haven't in the last 5 seconds
+        if (abs(velocity - getVelocity()) <= config.RUMBLE_ERROR_EPSILON_TPS && (now - debounce) >= 5000) {
             context.gamepads.gamepad2.rumble(1000)
             context.gamepads.gamepad1.rumble(1000)
             debounce = System.currentTimeMillis()
         }
 
-        setMotorPower(power)
+        setMotorVelocity(velocity)
         return Result.success(Unit)
     }
 
+    /**
+     * Turn the flywheel on, transitions to AUTO
+     */
     fun autoFlywheelOn(): Result<Unit> {
         state = GBSFlywheelModuleState.AUTO
         return Result.success(Unit)
     }
 
+    /**
+     * Turn the flywheel off, transitions to IDLE
+     */
     fun autoFlywheelOff(): Result<Unit> {
         state = GBSFlywheelModuleState.IDLE
         return Result.success(Unit)
     }
 
-    fun setMotorPower(power: Double): Result<Unit> {
-
-        flywheelMotor.velocity = power.toDouble()
+    /**
+     * Attempt to spin the flywheel at the given velocity
+     * @param velocity The target motor velocity
+     */
+    fun setMotorVelocity(velocity: Double): Result<Unit> {
+        flywheelMotor.velocity = velocity
         return Result.success(Unit)
     }
 
-    fun getMotorPower(): Double {
-        return flywheelMotor.velocity.toDouble()
+    /**
+     * Set the auto velocity target
+     * @param velocity The auto velocity
+     */
+    fun setAutoVelocity(velocity: Double) {
+        this.autoVelocity = velocity
+    }
+
+    /**
+     * Get the current velocity of the flywheel
+     */
+    fun getVelocity(): Double {
+        return flywheelMotor.velocity
     }
 }

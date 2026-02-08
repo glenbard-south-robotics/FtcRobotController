@@ -1,37 +1,33 @@
 package org.firstinspires.ftc.teamcode.opmodes.test
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.modules.CYCLE_MS
-import org.firstinspires.ftc.teamcode.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
+import org.firstinspires.ftc.teamcode.modules.robot.GBSWebcamModule
+import org.firstinspires.ftc.teamcode.opmodes.GBSOpMode
 
 @Suppress("unused")
 @TeleOp(name = "GBSTestAllOp", group = "Tests")
-class GBSTestAll : LinearOpMode() {
-    override fun runOpMode() {
+class GBSTestAll() : GBSOpMode() {
+    override fun initialize(): Result<Unit> {
         val context = GBSModuleContext(this)
+        registerModules(
+            "base" to GBSBaseModule(context),
+            "flywheel" to GBSFlywheelModule(context),
+            "intake" to GBSIntakeModule(context),
+            "webcam" to GBSWebcamModule(context, "webcam"),
+            "webcam2" to GBSWebcamModule(context, "webcam2"),
+        )
+        return Result.success(Unit)
+    }
 
-        val base = GBSBaseModule(context)
-        val intake = GBSIntakeModule(context)
-        val flywheel = GBSFlywheelModule(context)
+    override fun run(): Result<Unit> {
+        return Result.success(Unit)
+    }
 
-        check(base.initialize().isSuccess)
-        check(intake.initialize().isSuccess)
-        check(flywheel.initialize().isSuccess)
-
-        waitForStart()
-
-        while (opModeIsActive()) {
-            check(base.run().isSuccess)
-            check(intake.run().isSuccess)
-            check(flywheel.run().isSuccess)
-
-            telemetry.update()
-            idle()
-        }
+    override fun shutdown(): Result<Unit> {
+        return Result.success(Unit)
     }
 }
