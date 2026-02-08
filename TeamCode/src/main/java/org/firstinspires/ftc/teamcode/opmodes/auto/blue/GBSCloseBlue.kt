@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.GBSCloseBlueConfiguration
-import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
@@ -14,7 +14,7 @@ import kotlin.math.abs
 @Autonomous(name = "GBSCloseBlue", group = "Blue")
 class GBSCloseBlue : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(this)
+        val context = GBSModuleOpModeContext(this)
 
         val baseModule = GBSBaseModule(context)
         val flywheelModule = GBSFlywheelModule(context)
@@ -23,20 +23,18 @@ class GBSCloseBlue : LinearOpMode() {
 
         waitForStart()
 
-        val config = GBSCloseBlueConfiguration()
-
-        flywheelModule.setAutoVelocity(config.FLYWHEEL_VELOCITY)
+        flywheelModule.setAutoVelocity(GBSCloseBlueConfiguration.FLYWHEEL_VELOCITY)
         flywheelModule.autoFlywheelOn()
 
         baseModule.autoDrive(
-            config.BASE_POWER,
-            config.MOTOR_DISTANCES.first,
-            config.MOTOR_DISTANCES.second,
+            GBSCloseBlueConfiguration.BASE_POWER,
+            GBSCloseBlueConfiguration.MOTOR_DISTANCES.first,
+            GBSCloseBlueConfiguration.MOTOR_DISTANCES.second,
             5000,
             {
-                baseModule.autoDrive(config.BASE_POWER, 12, -12, 5000, {
-                    sleep(config.SPINUP_MS)
-                    intakeModule.autoIntakeForward(config.INTAKE_POWER)
+                baseModule.autoDrive(GBSCloseBlueConfiguration.BASE_POWER, 12, -12, 5000, {
+                    sleep(GBSCloseBlueConfiguration.SPINUP_MS)
+                    intakeModule.autoIntakeForward(GBSCloseBlueConfiguration.INTAKE_POWER)
                 })
             })
 
@@ -50,12 +48,17 @@ class GBSCloseBlue : LinearOpMode() {
                 val aprilTag = webcamModule2.aprilTagDetections.first()
                 val currentPose = aprilTag.robotPose
 
-                val errorYaw = config.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
+                val errorYaw =
+                    GBSCloseBlueConfiguration.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
 
-                val turnPower = errorYaw * config.PID_K_P
+                val turnPower = errorYaw * GBSCloseBlueConfiguration.PID_K_P
 
-                if (abs(errorYaw) > config.ERROR_EPSILON) {
-                    baseModule.autoPower(config.ERROR_CORRECTION_SPEED, -turnPower, turnPower)
+                if (abs(errorYaw) > GBSCloseBlueConfiguration.ERROR_EPSILON) {
+                    baseModule.autoPower(
+                        GBSCloseBlueConfiguration.ERROR_CORRECTION_SPEED,
+                        -turnPower,
+                        turnPower
+                    )
                 } else {
                     baseModule.autoPower(0.0, 0.0, 0.0)
                 }

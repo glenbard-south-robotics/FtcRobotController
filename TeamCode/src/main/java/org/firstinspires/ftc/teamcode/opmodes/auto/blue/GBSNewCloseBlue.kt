@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.firstinspires.ftc.teamcode.GBSCloseBlueConfiguration
-import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
@@ -14,7 +14,7 @@ import kotlin.math.abs
 @Autonomous(name = "GBSNewCloseBlue", group = "Blue")
 class GBSNewCloseBlue : GBSOpMode() {
     override fun initialize(): Result<Unit> {
-        val context = GBSModuleContext(this)
+        val context = GBSModuleOpModeContext(this)
 
         this.registerModules(
             "base" to GBSBaseModule(context),
@@ -32,15 +32,17 @@ class GBSNewCloseBlue : GBSOpMode() {
         val intake = this.getModule<GBSIntakeModule>("intake")
         val webcam2 = this.getModule<GBSWebcamModule>("webcam2")
 
-        val config = GBSCloseBlueConfiguration()
-
         flywheel.autoFlywheelOn()
 
         base.autoDrive(
-            config.BASE_POWER, config.MOTOR_DISTANCES.first, config.MOTOR_DISTANCES.second, 5000, {
-                base.autoDrive(config.BASE_POWER, 12, -12, 5000, {
-                    sleep(config.SPINUP_MS)
-                    intake.autoIntakeForward(config.INTAKE_POWER)
+            GBSCloseBlueConfiguration.BASE_POWER,
+            GBSCloseBlueConfiguration.MOTOR_DISTANCES.first,
+            GBSCloseBlueConfiguration.MOTOR_DISTANCES.second,
+            5000,
+            {
+                base.autoDrive(GBSCloseBlueConfiguration.BASE_POWER, 12, -12, 5000, {
+                    sleep(GBSCloseBlueConfiguration.SPINUP_MS)
+                    intake.autoIntakeForward(GBSCloseBlueConfiguration.INTAKE_POWER)
                 })
             })
 
@@ -48,12 +50,15 @@ class GBSNewCloseBlue : GBSOpMode() {
             val aprilTag = webcam2.aprilTagDetections.first()
             val currentPose = aprilTag.robotPose
 
-            val errorYaw = config.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
+            val errorYaw =
+                GBSCloseBlueConfiguration.DESIRED_TAG_ORIENTATION.yaw - currentPose.orientation.yaw
 
-            val turnPower = errorYaw * config.PID_K_P
+            val turnPower = errorYaw * GBSCloseBlueConfiguration.PID_K_P
 
-            if (abs(errorYaw) > config.ERROR_EPSILON) {
-                base.autoPower(config.ERROR_CORRECTION_SPEED, -turnPower, turnPower)
+            if (abs(errorYaw) > GBSCloseBlueConfiguration.ERROR_EPSILON) {
+                base.autoPower(
+                    GBSCloseBlueConfiguration.ERROR_CORRECTION_SPEED, -turnPower, turnPower
+                )
             } else {
                 base.autoPower(0.0, 0.0, 0.0)
             }

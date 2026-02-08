@@ -2,52 +2,52 @@ package org.firstinspires.ftc.teamcode
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
+import org.firstinspires.ftc.teamcode.modules.GBSRobotModuleConfiguration
 
 //region MODULES
 
 @Suppress("PropertyName")
-class GBSBaseModuleConfiguration {
-    val BASE_POWER_COEFFICIENT = 0.75
-    val FINE_ADJUST_POWER_COEFFICIENT = 0.33
+object GBSBaseModuleConfiguration : GBSRobotModuleConfiguration() {
+    override val DEBUG_TELEMETRY = true
 
-    val STICK_THRESHOLD = 0.2
-    val FINE_ADJUST_STICK_THRESHOLD = 0.05
+    const val BASE_POWER_COEFFICIENT = 0.75
+    const val FINE_ADJUST_POWER_COEFFICIENT = 0.33
 
-    val DEBUG_TELEMETRY = true
+    const val STICK_THRESHOLD = 0.2
+    const val FINE_ADJUST_STICK_THRESHOLD = 0.05
 }
 
 @Suppress("PropertyName")
-class GBSIntakeModuleConfiguration {
-    val POWER = 1.0
-    val FORWARD_COEFFICIENT = 1.0
-    val SLOW_MODE_COEFFICIENT = 0.75
-    val REVERSE_COEFFICIENT = 0.5
+object GBSIntakeModuleConfiguration : GBSRobotModuleConfiguration() {
+    override val DEBUG_TELEMETRY = true
 
-    val DEBUG_TELEMETRY = true
+    const val POWER = 1.0
+    const val FORWARD_COEFFICIENT = 1.0
+    const val SLOW_MODE_COEFFICIENT = 0.75
+    const val REVERSE_COEFFICIENT = 0.5
 }
 
 @Suppress("PropertyName")
-class GBSFlywheelModuleConfiguration {
+object GBSFlywheelModuleConfiguration : GBSRobotModuleConfiguration() {
+    override val DEBUG_TELEMETRY = true
+
     /**
      * The velocity of the motor in TeleOp
      */
-    val TELEOP_VELOCITY = 2500.0
+    const val TELEOP_VELOCITY = 2500.0
     /**
      * The velocity of the motor in TeleOp with slow mode
      */
-    val TELEOP_SLOW_VELOCITY = 2000.0
+    const val TELEOP_SLOW_VELOCITY = 2000.0
 
     /**
      * The error in velocity allowed to rumble the gamepads
      */
-    val RUMBLE_ERROR_EPSILON_TPS = 10.0
-
-    val DEBUG_TELEMETRY = true
+    const val RUMBLE_ERROR_EPSILON_TPS = 10.0
 }
 
-@Suppress("PropertyName")
-class GBSWebcamModuleConfig() {
-    val DEBUG_TELEMETRY = true
+object GBSWebcamModuleConfig : GBSRobotModuleConfiguration() {
+    override val DEBUG_TELEMETRY = true
 }
 
 //endregion
@@ -56,17 +56,16 @@ class GBSWebcamModuleConfig() {
 
 //region BLUE
 
-@Suppress("PropertyName")
-class GBSCloseBlueConfiguration {
+object GBSCloseBlueConfiguration {
     /**
      * The speed of the flywheel in ticks / second
      */
-    val FLYWHEEL_VELOCITY = 2000.0
+    const val FLYWHEEL_VELOCITY = 2000.0
 
     /**
      * The speed we should drive at
      */
-    val BASE_POWER = 0.33
+    const val BASE_POWER = 0.33
 
     /**
      * Distance to drive before stopping in inches
@@ -78,7 +77,7 @@ class GBSCloseBlueConfiguration {
     /**
      * How long should we wait to let the flywheel spin-up before turning on the intake in milliseconds
      */
-    val SPINUP_MS = 3000L
+    const val SPINUP_MS = 3000L
 
     /**
      * What orientation do we want to see in the AprilTag
@@ -89,35 +88,34 @@ class GBSCloseBlueConfiguration {
     /**
      * Speed of the intake after spin-up
      */
-    val INTAKE_POWER = 0.5
+    const val INTAKE_POWER = 0.5
 
     /**
      * What amount of error is acceptable?
      */
-    val ERROR_EPSILON = 0.5
+    const val ERROR_EPSILON = 0.5
 
     /**
      * The power of the base motors when correcting error
      */
-    val ERROR_CORRECTION_SPEED = 0.25
+    const val ERROR_CORRECTION_SPEED = 0.25
 
     /**
      * The proportional constant of the PID, a coefficient to the current error
      */
-    val PID_K_P = 0.05
+    const val PID_K_P = 0.05
 }
 
-@Suppress("PropertyName")
-class GBSFarBlueConfiguration {
+object GBSFarBlueConfiguration {
     /**
      * The speed of the flywheel in ticks / second
      */
-    val FLYWHEEL_VELOCITY = 2000.0
+    const val FLYWHEEL_VELOCITY = 2000.0
 
     /**
      * The speed we should drive at
      */
-    val BASE_POWER = 0.33
+    const val BASE_POWER = 0.33
 
     /**
      * Distance to drive before stopping in inches
@@ -129,7 +127,7 @@ class GBSFarBlueConfiguration {
     /**
      * How long should we wait to let the flywheel spin-up before turning on the intake in milliseconds
      */
-    val SPINUP_MS = 3000L
+    const val SPINUP_MS = 3000L
 
     /**
      * What orientation do we want to see in the AprilTag
@@ -140,22 +138,22 @@ class GBSFarBlueConfiguration {
     /**
      * Speed of the intake after spin-up
      */
-    val INTAKE_POWER = 0.5
+    const val INTAKE_POWER = 0.5
 
     /**
      * What amount of error is acceptable?
      */
-    val ERROR_EPSILON = 0.5
+    const val ERROR_EPSILON = 0.5
 
     /**
      * The power of the base motors when correcting error
      */
-    val ERROR_CORRECTION_SPEED = 0.25
+    const val ERROR_CORRECTION_SPEED = 0.25
 
     /**
      * The proportional constant of the PID, a coefficient to the current error
      */
-    val PID_K_P = 0.05
+    const val PID_K_P = 0.05
 }
 
 //endregion

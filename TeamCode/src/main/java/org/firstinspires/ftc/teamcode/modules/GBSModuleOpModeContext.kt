@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
 
-data class GBSModuleContext(
+data class GBSModuleOpModeContext(
     val opMode: LinearOpMode,
     val hardwareMap: HardwareMap,
     val telemetry: Telemetry,

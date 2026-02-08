@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.robot
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
-import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import kotlin.math.abs
 
@@ -11,7 +11,7 @@ enum class GBSFlywheelModuleState {
     IDLE, FORWARD, AUTO,
 }
 
-class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel") :
+class GBSFlywheelModule(context: GBSModuleOpModeContext, hardware: String = "flywheel") :
     GBSRobotModule(context, hardware) {
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
     private var debounce: Long = 0
@@ -57,7 +57,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     }
 
     private fun handleIdleState(): Result<Unit> {
-        val gamepad2 = context.gamepads.gamepad2
+        val gamepad2 = opModeContext.gamepads.gamepad2
 
         if (gamepad2.triangleWasPressed()) {
             state = GBSFlywheelModuleState.FORWARD
@@ -69,8 +69,7 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     }
 
     private fun handleRunningState(): Result<Unit> {
-        val config = GBSFlywheelModuleConfiguration()
-        val gamepad2 = context.gamepads.gamepad2
+        val gamepad2 = opModeContext.gamepads.gamepad2
 
         if (gamepad2.triangleWasPressed()) {
             state = GBSFlywheelModuleState.IDLE
@@ -82,17 +81,17 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
         }
 
         val velocity = if (slowMode) {
-            -config.TELEOP_SLOW_VELOCITY
+            -GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY
         } else {
-            -config.TELEOP_VELOCITY
+            -GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
         }
 
         val now = System.currentTimeMillis()
 
         // Rumble the gamepads when the flywheel is at its target speed and we haven't in the last 5 seconds
-        if (abs(velocity - getVelocity()) <= config.RUMBLE_ERROR_EPSILON_TPS && (now - debounce) >= 5000) {
-            context.gamepads.gamepad2.rumble(1000)
-            context.gamepads.gamepad1.rumble(1000)
+        if (abs(velocity - getVelocity()) <= GBSFlywheelModuleConfiguration.RUMBLE_ERROR_EPSILON_TPS && (now - debounce) >= 5000) {
+            opModeContext.gamepads.gamepad2.rumble(1000)
+            opModeContext.gamepads.gamepad1.rumble(1000)
             debounce = System.currentTimeMillis()
         }
 

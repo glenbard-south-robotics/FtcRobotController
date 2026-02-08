@@ -2,14 +2,14 @@ package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSIntakeModuleConfiguration
-import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 
 enum class GBSIntakeModuleState {
     IDLE, FORWARD, REVERSE
 }
 
-class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor") :
+class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intakeMotor") :
     GBSRobotModule(context, hardware) {
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
@@ -37,7 +37,7 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
     }
 
     private fun handleIdleState(): Result<Unit> {
-        val gamepad2 = context.gamepads.gamepad2
+        val gamepad2 = opModeContext.gamepads.gamepad2
 
         if (gamepad2.leftBumperWasPressed()) {
             if (state == GBSIntakeModuleState.FORWARD) {
@@ -73,15 +73,17 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
     }
 
     private fun handleRunningState(): Result<Unit> {
-        val config = GBSIntakeModuleConfiguration()
+
         val coefficient: Double =
-            if (state == GBSIntakeModuleState.FORWARD) config.FORWARD_COEFFICIENT else config.REVERSE_COEFFICIENT;
-        val gamepad2 = context.gamepads.gamepad2
+            if (state == GBSIntakeModuleState.FORWARD) GBSIntakeModuleConfiguration.FORWARD_COEFFICIENT else GBSIntakeModuleConfiguration.REVERSE_COEFFICIENT
+        val gamepad2 = opModeContext.gamepads.gamepad2
 
         val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
-        val slowModeCoefficient = if (slowMode) config.SLOW_MODE_COEFFICIENT else 1.0
+        val slowModeCoefficient =
+            if (slowMode) GBSIntakeModuleConfiguration.SLOW_MODE_COEFFICIENT else 1.0
 
-        val power = config.POWER * coefficient * modeCoefficient * slowModeCoefficient
+        val power =
+            GBSIntakeModuleConfiguration.POWER * coefficient * modeCoefficient * slowModeCoefficient
 
         if (gamepad2.leftBumperWasPressed()) {
             if (state == GBSIntakeModuleState.FORWARD) {

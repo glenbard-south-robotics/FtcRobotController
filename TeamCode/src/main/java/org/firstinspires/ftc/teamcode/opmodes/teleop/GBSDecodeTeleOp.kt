@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
+import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.modules.robot.GBSIntakeModule
 @TeleOp(name = "GBSDecodeTeleOp", group = "TeleOp")
 class GBSDecodeTeleOp : LinearOpMode() {
     override fun runOpMode() {
-        val context = GBSModuleContext(this)
+        val context = GBSModuleOpModeContext(this)
 
         val base = GBSBaseModule(context)
         val intake = GBSIntakeModule(context)
