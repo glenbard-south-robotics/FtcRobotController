@@ -63,6 +63,7 @@ abstract class GBSOpMode : LinearOpMode() {
     fun runRegistryModules() {
         for ((name, module) in moduleRegistry) {
             module.run().getOrElse { throw it }
+            module.emitDebugTelemetry(name)
         }
     }
 

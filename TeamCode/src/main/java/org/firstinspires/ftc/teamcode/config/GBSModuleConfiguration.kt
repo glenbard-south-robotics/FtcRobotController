@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.config
 
-import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSIntakeModuleConfiguration
