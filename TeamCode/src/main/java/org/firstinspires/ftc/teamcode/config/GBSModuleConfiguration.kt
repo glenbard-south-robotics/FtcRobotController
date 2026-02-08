@@ -2,7 +2,9 @@ package org.firstinspires.ftc.teamcode.config
 
 import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSBaseModuleConfiguration
+import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSIntakeModuleConfiguration
+import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSWebcamModuleConfiguration
 
 object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
     override val DEBUG_TELEMETRY = true
@@ -23,24 +25,16 @@ object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {
     override val REVERSE_COEFFICIENT = 0.5
 }
 
-object GBSFlywheelModuleConfiguration : IGBSRobotModuleConfiguration {
+object GBSFlywheelModuleConfiguration : IGBSFlywheelModuleConfiguration {
     override val DEBUG_TELEMETRY = true
 
-    /**
-     * The velocity of the motor in TeleOp
-     */
-    const val TELEOP_VELOCITY = 2500.0
-    /**
-     * The velocity of the motor in TeleOp with slow mode
-     */
-    const val TELEOP_SLOW_VELOCITY = 2000.0
-
-    /**
-     * The error in velocity allowed to rumble the gamepads
-     */
-    const val RUMBLE_ERROR_EPSILON_TPS = 10.0
+    override val TELEOP_VELOCITY = 2500.0
+    override val TELEOP_SLOW_VELOCITY = 2000.0
+    override val RUMBLE_ERROR_EPSILON = 10.0
 }
 
-object GBSWebcamModuleConfig : IGBSRobotModuleConfiguration {
+object GBSWebcamModuleConfig : IGBSWebcamModuleConfiguration {
     override val DEBUG_TELEMETRY = true
+
+    override val DECIMATION: Float = 3.0F
 }

@@ -89,7 +89,7 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext, hardware: String = "fly
         val now = System.currentTimeMillis()
 
         // Rumble the gamepads when the flywheel is at its target speed and we haven't in the last 5 seconds
-        if (abs(velocity - getVelocity()) <= GBSFlywheelModuleConfiguration.RUMBLE_ERROR_EPSILON_TPS && (now - debounce) >= 5000) {
+        if (abs(velocity - getVelocity()) <= GBSFlywheelModuleConfiguration.RUMBLE_ERROR_EPSILON && (now - debounce) >= 5000) {
             opModeContext.gamepads.gamepad2.rumble(1000)
             opModeContext.gamepads.gamepad1.rumble(1000)
             debounce = System.currentTimeMillis()

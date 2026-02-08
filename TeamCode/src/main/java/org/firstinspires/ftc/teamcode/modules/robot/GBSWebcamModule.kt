@@ -25,7 +25,7 @@ class GBSWebcamModule(context: GBSModuleOpModeContext, hardware: String) :
             }
 
             aprilTagProcessor = AprilTagProcessor.Builder().build()
-            aprilTagProcessor.setDecimation(2.0F)
+            aprilTagProcessor.setDecimation(GBSWebcamModuleConfig.DECIMATION)
 
             this.tryGetHardware<WebcamName>(hardware).fold({
                 visionPortal =
