@@ -1,4 +1,4 @@
-dev: build-debug deploy-debug
+debug: build-debug deploy-debug
 release: build-release deploy-release
 
 build-debug:

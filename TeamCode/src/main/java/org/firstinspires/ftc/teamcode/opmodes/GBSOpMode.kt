@@ -51,7 +51,7 @@ abstract class GBSOpMode : LinearOpMode() {
      * @throws IllegalStateException when initialization fails
      */
     fun initializeRegistryModules() {
-        for ((name, module) in moduleRegistry) {
+        for ((_, module) in moduleRegistry) {
             module.initialize().getOrElse { throw it }
         }
     }
