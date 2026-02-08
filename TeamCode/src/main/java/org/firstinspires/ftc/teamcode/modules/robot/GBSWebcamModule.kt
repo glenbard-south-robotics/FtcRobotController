@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.modules.robot
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl
-import org.firstinspires.ftc.teamcode.GBSWebcamModuleConfig
+import org.firstinspires.ftc.teamcode.config.GBSWebcamModuleConfig
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule

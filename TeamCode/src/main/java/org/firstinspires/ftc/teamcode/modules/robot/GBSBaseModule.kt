@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
+import org.firstinspires.ftc.teamcode.config.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule

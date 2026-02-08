@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.modules
+package org.firstinspires.ftc.teamcode.config.modules
 
 @Suppress("PropertyName")
-abstract class GBSRobotModuleConfiguration {
+interface IGBSRobotModuleConfiguration {
     /**
      * Should we enable debug telemetry such as motor power?
      */

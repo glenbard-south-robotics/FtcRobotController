@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.GBSFarBlueConfiguration
+import org.firstinspires.ftc.teamcode.config.GBSFarBlueConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.teamcode.GBSCloseBlueConfiguration
+import org.firstinspires.ftc.teamcode.config.GBSCloseBlueConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
 import org.firstinspires.ftc.teamcode.modules.robot.GBSFlywheelModule

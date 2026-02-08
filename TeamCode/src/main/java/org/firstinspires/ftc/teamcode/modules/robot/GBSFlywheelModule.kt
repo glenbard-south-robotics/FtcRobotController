@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
+import org.firstinspires.ftc.teamcode.config.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
