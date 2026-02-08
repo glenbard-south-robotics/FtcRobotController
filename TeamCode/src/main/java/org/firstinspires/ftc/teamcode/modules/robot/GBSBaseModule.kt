@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.config.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -17,8 +18,11 @@ enum class GBSBaseModuleState {
     IDLE, MANUAL, AUTO_DRIVE,
 }
 
+@Suppress("unused")
 class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") :
     GBSRobotModule(context, hardware) {
+    override val enableDebugTelemetry: Boolean = GBSBaseModuleConfiguration.DEBUG_TELEMETRY
+
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
     private var fineAdjustMode: Boolean = false
 
@@ -235,4 +239,41 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
             return Result.failure(e)
         }
     }
+
+    //region Telemetry
+
+    @GBSTelemetryDebug(group = "Base")
+    fun currentState(): String = state.name
+
+    @GBSTelemetryDebug(group = "Base")
+    fun fineAdjustEnabled(): Boolean = fineAdjustMode
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun leftMotorPower(): Double = leftDrive.power
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun rightMotorPower(): Double = rightDrive.power
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun leftMotorPosition(): Int = leftDrive.currentPosition
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun rightMotorPosition(): Int = rightDrive.currentPosition
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun leftMotorTarget(): Int = leftDrive.targetPosition
+
+    @GBSTelemetryDebug(group = "Base/Motors")
+    fun rightMotorTarget(): Int = rightDrive.targetPosition
+
+    @GBSTelemetryDebug(group = "Base/Auto")
+    fun autoSpeed(): Double = autoSpeed
+
+    @GBSTelemetryDebug(group = "Base/Auto")
+    fun autoElapsedTime(): Double = autoDriveTimer.milliseconds()
+
+    @GBSTelemetryDebug(group = "Base/Auto")
+    fun autoTimeout(): Int = autoTimeoutMs
+
+    //endregion
 }

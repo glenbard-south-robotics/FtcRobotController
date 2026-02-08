@@ -5,14 +5,18 @@ import org.firstinspires.ftc.teamcode.config.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
 
 enum class GBSFlywheelModuleState {
     IDLE, FORWARD, AUTO,
 }
 
+@Suppress("unused")
 class GBSFlywheelModule(context: GBSModuleOpModeContext, hardware: String = "flywheel") :
     GBSRobotModule(context, hardware) {
+    override val enableDebugTelemetry: Boolean = GBSFlywheelModuleConfiguration.DEBUG_TELEMETRY
+
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
     private var debounce: Long = 0
     private var slowMode: Boolean = false
@@ -138,4 +142,29 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext, hardware: String = "fly
     fun getVelocity(): Double {
         return flywheelMotor.velocity
     }
+
+    //region Telemetry
+
+    @GBSTelemetryDebug(group = "Flywheel")
+    fun currentState(): String = state.name
+
+    @GBSTelemetryDebug(group = "Flywheel")
+    fun currentVelocity(): Double = flywheelMotor.velocity
+
+    @GBSTelemetryDebug(group = "Flywheel")
+    fun targetVelocity(): Double {
+        return when (state) {
+            GBSFlywheelModuleState.AUTO -> autoVelocity ?: 0.0
+            GBSFlywheelModuleState.FORWARD -> if (slowMode) -GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY else -GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
+            else -> 0.0
+        }
+    }
+
+    @GBSTelemetryDebug(group = "Flywheel")
+    fun isSlowMode(): Boolean = slowMode
+
+    @GBSTelemetryDebug(group = "Flywheel")
+    fun autoTargetVelocity(): Double? = autoVelocity
+
+    //endregion
 }

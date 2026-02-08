@@ -4,13 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.config.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 
 enum class GBSIntakeModuleState {
     IDLE, FORWARD, REVERSE
 }
 
+@Suppress("unused")
 class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intakeMotor") :
     GBSRobotModule(context, hardware) {
+    override val enableDebugTelemetry: Boolean = GBSIntakeModuleConfiguration.DEBUG_TELEMETRY
+
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
     private lateinit var intakeMotor: DcMotorEx
@@ -163,4 +167,35 @@ class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intak
         state = GBSIntakeModuleState.IDLE
         return setMotorVelocity(0.0)
     }
+
+    //region Telemetry
+
+    @GBSTelemetryDebug(group = "Intake")
+    fun currentState(): String = state.name
+
+    @GBSTelemetryDebug(group = "Intake")
+    fun isSlowMode(): Boolean = slowMode
+
+    @GBSTelemetryDebug(group = "Intake")
+    fun motorPower(): Double = intakeMotor.power
+
+    @GBSTelemetryDebug(group = "Intake")
+    fun motorVelocity(): Double = intakeMotor.velocity
+
+    @GBSTelemetryDebug(group = "Intake")
+    fun targetPower(): Double {
+        val coefficient = if (state == GBSIntakeModuleState.FORWARD)
+            GBSIntakeModuleConfiguration.FORWARD_COEFFICIENT
+        else
+            GBSIntakeModuleConfiguration.REVERSE_COEFFICIENT
+
+        val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
+        val slowCoefficient =
+            if (slowMode) GBSIntakeModuleConfiguration.SLOW_MODE_COEFFICIENT else 1.0
+
+        return GBSIntakeModuleConfiguration.POWER * coefficient * modeCoefficient * slowCoefficient
+    }
+
+
+    //endregion
 }
