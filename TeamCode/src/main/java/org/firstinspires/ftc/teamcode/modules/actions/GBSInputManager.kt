@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.modules.actions
 
 import org.firstinspires.ftc.teamcode.GBSGamepadPair
+import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
 
 data class GBSInputManager(private val gamepadPair: GBSGamepadPair) {
     /**
@@ -69,5 +70,23 @@ data class GBSInputManager(private val gamepadPair: GBSGamepadPair) {
         }
         val v = raw.coerceIn(-1f, 1f)
         return if (kotlin.math.abs(v) < binding.deadZone) 0f else v * binding.scale
+    }
+
+    /**
+     * Check if the given GBSModuleAction was pressed
+     * @return `false` if the binding does not exist
+     */
+    fun GBSModuleActions.wasPressed(config: IGBSRobotModuleConfiguration): Boolean {
+        val binding = config.BINARY_BINDINGS[this] ?: return false
+        return binaryWasPressed(binding)
+    }
+
+    /**
+     * Get the value of the GBSAnalogAction
+     * @return `0f` if the binding does not exist
+     */
+    fun GBSAnalogAction.read(config: IGBSRobotModuleConfiguration): Float {
+        val binding = config.ANALOG_BINDINGS[this] ?: return 0f
+        return readAnalog(binding)
     }
 }

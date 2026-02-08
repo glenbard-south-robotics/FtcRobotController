@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSIntakeModuleConfi
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSWebcamModuleConfiguration
 import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
 import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogBinding
-import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryBinding
 import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryBinding
 import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadID
 import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 
@@ -22,27 +22,21 @@ object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
 
     override val BINARY_BINDINGS = mapOf(
         GBSModuleActions.BASE_SLOW_TOGGLE to GBSBinaryBinding(
-            GBSGamepadID.GAMEPAD_ONE,
-            GBSBinaryAction.CROSS
+            GBSGamepadID.GAMEPAD_ONE, GBSBinaryAction.CROSS
         )
     )
-
     override val ANALOG_BINDINGS = mapOf(
         GBSAnalogAction.LEFT_STICK_X to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE,
-            GBSAnalogAction.LEFT_STICK_X
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_X
         ),
         GBSAnalogAction.LEFT_STICK_Y to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE,
-            GBSAnalogAction.LEFT_STICK_Y
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.LEFT_STICK_Y
         ),
         GBSAnalogAction.RIGHT_STICK_X to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE,
-            GBSAnalogAction.RIGHT_STICK_X
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_X
         ),
         GBSAnalogAction.RIGHT_STICK_Y to GBSAnalogBinding(
-            GBSGamepadID.GAMEPAD_ONE,
-            GBSAnalogAction.RIGHT_STICK_Y
+            GBSGamepadID.GAMEPAD_ONE, GBSAnalogAction.RIGHT_STICK_Y
         ),
     )
 }
@@ -54,6 +48,9 @@ object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {
     override val FORWARD_COEFFICIENT = 1.0
     override val SLOW_MODE_COEFFICIENT = 0.75
     override val REVERSE_COEFFICIENT = 0.5
+
+    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf()
+    override val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding> = mapOf()
 }
 
 object GBSFlywheelModuleConfiguration : IGBSFlywheelModuleConfiguration {
@@ -62,10 +59,16 @@ object GBSFlywheelModuleConfiguration : IGBSFlywheelModuleConfiguration {
     override val TELEOP_VELOCITY = 2500.0
     override val TELEOP_SLOW_VELOCITY = 2000.0
     override val RUMBLE_ERROR_EPSILON = 10.0
+
+    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf()
+    override val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding> = mapOf()
 }
 
 object GBSWebcamModuleConfig : IGBSWebcamModuleConfiguration {
     override val DEBUG_TELEMETRY = true
 
     override val DECIMATION: Float = 3.0F
+
+    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf()
+    override val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding> = mapOf()
 }

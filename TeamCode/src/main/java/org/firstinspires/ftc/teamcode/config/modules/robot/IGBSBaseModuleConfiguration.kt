@@ -27,7 +27,4 @@ interface IGBSBaseModuleConfiguration : IGBSRobotModuleConfiguration {
      * How much do we need to move the sticks in order to start moving the robot in fine adjust mode
      */
     val FINE_ADJUST_STICK_THRESHOLD: Double
-
-    val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding>
-    val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding>
 }
