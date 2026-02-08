@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
@@ -18,16 +17,11 @@ class GBSIntakeModule(context: GBSModuleContext, hardware: String = "intakeMotor
     private var slowMode: Boolean = true
 
     override fun initialize(): Result<Unit> {
-        return try {
-            val intake = context.hardwareMap.tryGet(DcMotorEx::class.java, hardware)
-                ?: throw GBSHardwareMissingException(hardware)
+        tryGetHardware<DcMotorEx>("intakeMotor").fold({
+            intakeMotor = it
+        }, { return Result.failure(it) })
 
-            intakeMotor = intake
-
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return Result.success(Unit)
     }
 
     override fun run(): Result<Unit> {

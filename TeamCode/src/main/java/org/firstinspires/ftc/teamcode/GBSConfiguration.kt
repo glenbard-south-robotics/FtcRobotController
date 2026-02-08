@@ -12,6 +12,8 @@ class GBSBaseModuleConfiguration {
 
     val STICK_THRESHOLD = 0.2
     val FINE_ADJUST_STICK_THRESHOLD = 0.05
+
+    val DEBUG_TELEMETRY = true
 }
 
 @Suppress("PropertyName")
@@ -20,6 +22,8 @@ class GBSIntakeModuleConfiguration {
     val FORWARD_COEFFICIENT = 1.0
     val SLOW_MODE_COEFFICIENT = 0.75
     val REVERSE_COEFFICIENT = 0.5
+
+    val DEBUG_TELEMETRY = true
 }
 
 @Suppress("PropertyName")
@@ -37,6 +41,8 @@ class GBSFlywheelModuleConfiguration {
      * The error in velocity allowed to rumble the gamepads
      */
     val RUMBLE_ERROR_EPSILON_TPS = 10.0
+
+    val DEBUG_TELEMETRY = true
 }
 
 @Suppress("PropertyName")

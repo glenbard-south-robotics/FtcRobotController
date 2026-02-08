@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.GBSFlywheelModuleConfiguration
-import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
-
 import kotlin.math.abs
 
 enum class GBSFlywheelModuleState {
@@ -17,23 +15,20 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
     GBSRobotModule(context, hardware) {
     private var state: GBSFlywheelModuleState = GBSFlywheelModuleState.IDLE
     private var debounce: Long = 0
+    private var slowMode: Boolean = false
 
     private var autoVelocity: Double? = null
 
     private lateinit var flywheelMotor: DcMotorEx
 
     override fun initialize(): Result<Unit> {
-        return try {
-            val flywheel = context.hardwareMap.tryGet(DcMotorEx::class.java, hardware)
-                ?: throw GBSHardwareMissingException(hardware)
+        tryGetHardware<DcMotorEx>("flywheel").fold(
+            { flywheelMotor = it },
+            { return Result.failure(it) })
 
-            flywheelMotor = flywheel
-            debounce = System.currentTimeMillis()
+        debounce = System.currentTimeMillis()
 
-            Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return Result.success(Unit)
     }
 
     override fun run(): Result<Unit> {
@@ -49,12 +44,9 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
         return Result.success(Unit)
     }
 
-    /**
-     * @throws GBSInvalidStateException when autoVelocity is null
-     */
     private fun handleAutoState(): Result<Unit> {
         if (this.autoVelocity == null) {
-            throw GBSInvalidStateException("Cannot setMotorPower when autoVelocity is null!")
+            return Result.failure(GBSInvalidStateException("Cannot setMotorPower when autoVelocity is null!"))
         }
 
         // This is safe since we checked if it was null above
@@ -76,16 +68,23 @@ class GBSFlywheelModule(context: GBSModuleContext, hardware: String = "flywheel"
         return Result.success(Unit)
     }
 
-    // TODO: Add slow mode to TeleOp
     private fun handleRunningState(): Result<Unit> {
         val config = GBSFlywheelModuleConfiguration()
         val gamepad2 = context.gamepads.gamepad2
 
-        val velocity = -config.TELEOP_VELOCITY
-
         if (gamepad2.triangleWasPressed()) {
             state = GBSFlywheelModuleState.IDLE
             return Result.success(Unit)
+        }
+
+        if (gamepad2.squareWasPressed()) {
+            slowMode = !slowMode
+        }
+
+        val velocity = if (slowMode) {
+            -config.TELEOP_SLOW_VELOCITY
+        } else {
+            -config.TELEOP_VELOCITY
         }
 
         val now = System.currentTimeMillis()

@@ -5,22 +5,20 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.GBSBaseModuleConfiguration
-import org.firstinspires.ftc.teamcode.exceptions.GBSHardwareMissingException
+import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
-import java.util.ArrayList
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 private const val WHEELS_INCHES_TO_TICKS = 140.0 / Math.PI
 
 enum class GBSBaseModuleState {
-    IDLE,
-    MANUAL,
-    AUTO_DRIVE,
+    IDLE, MANUAL, AUTO_DRIVE,
 }
 
-class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSRobotModule(context, hardware) {
+class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") :
+    GBSRobotModule(context, hardware) {
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
     private var fineAdjustMode: Boolean = false
 
@@ -35,27 +33,18 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
     private val autoDriveCallbacks: MutableList<() -> Unit> = ArrayList()
 
     override fun initialize(): Result<Unit> {
-        return try {
-            val left = context.hardwareMap .tryGet(DcMotor::class.java, "leftDrive")
-                ?: throw GBSHardwareMissingException("leftDrive")
-            val right = context.hardwareMap.tryGet(DcMotor::class.java, "rightDrive")
-                ?: throw GBSHardwareMissingException("rightDrive")
+        tryGetHardware<DcMotor>("leftDrive").fold(
+            { leftDrive = it },
+            { return Result.failure(it) })
+        tryGetHardware<DcMotor>("rightDrive").fold(
+            { rightDrive = it },
+            { return Result.failure(it) })
 
-            leftDrive = left
-            rightDrive = right
+        leftDrive.direction = DcMotorSimple.Direction.REVERSE
+        leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
-            leftDrive.direction = DcMotorSimple.Direction.REVERSE
-            leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-            rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-
-            context.telemetry.addLine("[INIT]: GBSBaseModule initialized.")
-            context.telemetry.update()
-            Result.success(Unit)
-        } catch (e: Exception) {
-            context.telemetry.addLine("[ERR] An exception was raised in GBSBaseModule::init: ${e.message}")
-            context.telemetry.update()
-            Result.failure(e)
-        }
+        return Result.success(Unit)
     }
 
     override fun run(): Result<Unit> {
@@ -81,7 +70,7 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
     }
 
     /**
-    * Check if the `y` values of any of the gamepad's sticks are over `config`'s `STICK_THRESHOLD`
+     * Check if the `y` values of any of the gamepad's sticks are over `config`'s `STICK_THRESHOLD`
      */
     fun sticksYOverThreshold(config: GBSBaseModuleConfiguration, gamepad: Gamepad): Boolean {
         val threshold = getManualStickThreshold(config)
@@ -139,10 +128,9 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
 
         val powerCoefficient = getManualPowerCoefficient(config)
 
-        val leftPower = if (abs(leftStickY) > stickThreshold)
-            leftStickY * powerCoefficient else 0.0
-        val rightPower = if (abs(rightStickY) > stickThreshold)
-            rightStickY * powerCoefficient else 0.0
+        val leftPower = if (abs(leftStickY) > stickThreshold) leftStickY * powerCoefficient else 0.0
+        val rightPower =
+            if (abs(rightStickY) > stickThreshold) rightStickY * powerCoefficient else 0.0
 
         return setMotorPowers(leftPower, rightPower)
     }
@@ -185,8 +173,9 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
         vararg callbacks: () -> Unit
     ): Result<Boolean> {
         if (state != GBSBaseModuleState.IDLE) {
-            return Result.failure(IllegalStateException("[ERR]: GBSBaseModule cannot autoDrive while not IDLE."))
+            return Result.failure(GBSInvalidStateException("Cannot autoDrive while not idle"))
         }
+
         try {
             autoDriveTimer.reset()
 
@@ -202,8 +191,7 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
             rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
             leftDrive.targetPosition = -(leftDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
-            rightDrive.targetPosition =
-                -(rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
+            rightDrive.targetPosition = -(rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
@@ -216,14 +204,18 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
         }
     }
 
+    /**
+     * Set the power of the motors in auto, uses RUN_TO_POSITION with a calculated distance
+     */
     fun autoPower(
         speed: Double,
         leftPower: Double,
         rightPower: Double,
     ): Result<Boolean> {
         if (state != GBSBaseModuleState.IDLE) {
-            return Result.failure(IllegalStateException("[ERR]: GBSBaseModule cannot autoPower while not IDLE."))
+            return Result.failure(GBSInvalidStateException("Cannot autoPower while not idle"))
         }
+
         try {
             autoDriveTimer.reset()
 
@@ -235,8 +227,7 @@ class GBSBaseModule(context: GBSModuleContext, hardware: String = "none") : GBSR
             rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
             leftDrive.targetPosition = -(leftPower * WHEELS_INCHES_TO_TICKS).roundToInt()
-            rightDrive.targetPosition =
-                -(rightPower * WHEELS_INCHES_TO_TICKS).roundToInt()
+            rightDrive.targetPosition = -(rightPower * WHEELS_INCHES_TO_TICKS).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
