@@ -4,6 +4,12 @@ import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSBaseModuleConfigu
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.config.modules.robot.IGBSWebcamModuleConfiguration
+import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogBinding
+import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryBinding
+import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadID
+import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 
 object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
     override val DEBUG_TELEMETRY = true
@@ -13,6 +19,32 @@ object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
 
     override val STICK_THRESHOLD = 0.2
     override val FINE_ADJUST_STICK_THRESHOLD = 0.05
+
+    override val BINARY_BINDINGS = mapOf(
+        GBSModuleActions.BASE_SLOW_TOGGLE to GBSBinaryBinding(
+            GBSGamepadID.GAMEPAD_ONE,
+            GBSBinaryAction.CROSS
+        )
+    )
+
+    override val ANALOG_BINDINGS = mapOf(
+        GBSAnalogAction.LEFT_STICK_X to GBSAnalogBinding(
+            GBSGamepadID.GAMEPAD_ONE,
+            GBSAnalogAction.LEFT_STICK_X
+        ),
+        GBSAnalogAction.LEFT_STICK_Y to GBSAnalogBinding(
+            GBSGamepadID.GAMEPAD_ONE,
+            GBSAnalogAction.LEFT_STICK_Y
+        ),
+        GBSAnalogAction.RIGHT_STICK_X to GBSAnalogBinding(
+            GBSGamepadID.GAMEPAD_ONE,
+            GBSAnalogAction.RIGHT_STICK_X
+        ),
+        GBSAnalogAction.RIGHT_STICK_Y to GBSAnalogBinding(
+            GBSGamepadID.GAMEPAD_ONE,
+            GBSAnalogAction.RIGHT_STICK_Y
+        ),
+    )
 }
 
 object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {

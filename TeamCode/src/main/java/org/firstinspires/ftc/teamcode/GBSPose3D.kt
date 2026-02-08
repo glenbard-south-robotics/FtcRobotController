@@ -19,8 +19,7 @@ fun roundPose3D(robotPose3D: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES): 
             round(originalPosition.y),
             round(originalPosition.z),
             originalPosition.acquisitionTime
-        ),
-        YawPitchRollAngles(
+        ), YawPitchRollAngles(
             angleUnit,
             round(originalOrientation.yaw),
             round(originalOrientation.pitch),
@@ -38,8 +37,7 @@ fun addPose3D(lhs: Pose3D, rhs: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES
             lhs.position.y + rhs.position.y,
             lhs.position.z + rhs.position.z,
             max(lhs.position.acquisitionTime, rhs.position.acquisitionTime)
-        ),
-        YawPitchRollAngles(
+        ), YawPitchRollAngles(
             angleUnit,
             lhs.orientation.yaw + rhs.orientation.yaw,
             lhs.orientation.pitch + rhs.orientation.pitch,
@@ -57,8 +55,7 @@ fun subPose3D(lhs: Pose3D, rhs: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES
             lhs.position.y - rhs.position.y,
             lhs.position.z - rhs.position.z,
             max(lhs.position.acquisitionTime, rhs.position.acquisitionTime)
-        ),
-        YawPitchRollAngles(
+        ), YawPitchRollAngles(
             angleUnit,
             lhs.orientation.yaw - rhs.orientation.yaw,
             lhs.orientation.pitch - rhs.orientation.pitch,
@@ -68,18 +65,18 @@ fun subPose3D(lhs: Pose3D, rhs: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES
     )
 }
 
-fun magnitudePose3D(lhs: Pose3D, rhs: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES): Pair<Double, Double> {
+fun magnitudePose3D(
+    lhs: Pose3D, rhs: Pose3D, angleUnit: AngleUnit = AngleUnit.DEGREES
+): Pair<Double, Double> {
     val difference = subPose3D(lhs, rhs, angleUnit)
 
     val differencePosition = difference.position
     val differenceOrientation = difference.orientation
 
     return Pair(
-            abs(differencePosition.x) +
-            abs(differencePosition.y) +
-            abs(differencePosition.z),
-            abs(differenceOrientation.yaw) +
-            abs(differenceOrientation.pitch) +
-            abs(differenceOrientation.roll)
-            )
+        abs(differencePosition.x) + abs(differencePosition.y) + abs(differencePosition.z),
+        abs(differenceOrientation.yaw) + abs(differenceOrientation.pitch) + abs(
+            differenceOrientation.roll
+        )
+    )
 }

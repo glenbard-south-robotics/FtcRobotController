@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.config.modules.robot
 
 import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
+import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogBinding
+import org.firstinspires.ftc.teamcode.modules.actions.GBSBinaryBinding
+import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 
 @Suppress("PropertyName")
 interface IGBSBaseModuleConfiguration : IGBSRobotModuleConfiguration {
@@ -23,4 +27,7 @@ interface IGBSBaseModuleConfiguration : IGBSRobotModuleConfiguration {
      * How much do we need to move the sticks in order to start moving the robot in fine adjust mode
      */
     val FINE_ADJUST_STICK_THRESHOLD: Double
+
+    val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding>
+    val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding>
 }
