@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.modules.robot
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.config.GBSBaseModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
+import org.firstinspires.ftc.teamcode.getCoefficient
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
@@ -40,7 +40,6 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
             { rightDrive = it },
             { return Result.failure(it) })
 
-        leftDrive.direction = DcMotorSimple.Direction.REVERSE
         leftDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
@@ -64,9 +63,6 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
         if (fineAdjustMode) GBSBaseModuleConfiguration.FINE_ADJUST_POWER_COEFFICIENT
         else GBSBaseModuleConfiguration.BASE_POWER_COEFFICIENT
 
-    /**
-     * Toggle fine adjust using the configured binary binding
-     */
     private fun handleFineAdjustToggle() {
         if (readBinaryPressed(GBSModuleActions.BASE_SLOW_TOGGLE)) {
             fineAdjustMode = !fineAdjustMode
@@ -123,8 +119,11 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
     }
 
     fun setMotorPowers(leftPower: Double, rightPower: Double): Result<Unit> = try {
-        leftDrive.power = -leftPower
-        rightDrive.power = -rightPower
+        val leftCoefficient = GBSBaseModuleConfiguration.LEFT_MOTOR_DIRECTION.getCoefficient()
+        val rightCoefficient = GBSBaseModuleConfiguration.RIGHT_MOTOR_DIRECTION.getCoefficient()
+
+        leftDrive.power = (leftCoefficient * leftPower)
+        rightDrive.power = (rightCoefficient * rightPower)
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
@@ -142,6 +141,9 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
         )
 
         return try {
+            val leftCoefficient = GBSBaseModuleConfiguration.LEFT_MOTOR_DIRECTION.getCoefficient()
+            val rightCoefficient = GBSBaseModuleConfiguration.RIGHT_MOTOR_DIRECTION.getCoefficient()
+
             autoDriveTimer.reset()
             state = GBSBaseModuleState.AUTO_DRIVE
             autoSpeed = speed
@@ -152,14 +154,14 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
             leftDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
-            leftDrive.targetPosition = -(leftDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
-            rightDrive.targetPosition = -(rightDistanceInches * WHEELS_INCHES_TO_TICKS).roundToInt()
+            leftDrive.targetPosition = ((leftDistanceInches * WHEELS_INCHES_TO_TICKS) * leftCoefficient).roundToInt()
+            rightDrive.targetPosition = ((rightDistanceInches * WHEELS_INCHES_TO_TICKS) * rightCoefficient).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
 
-            leftDrive.power = abs(autoSpeed)
-            rightDrive.power = abs(autoSpeed)
+            leftDrive.power = abs(autoSpeed) * leftCoefficient
+            rightDrive.power = abs(autoSpeed) * rightCoefficient
             Result.success(false)
         } catch (e: Exception) {
             Result.failure(e)
@@ -172,6 +174,9 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
         )
 
         return try {
+            val leftCoefficient = GBSBaseModuleConfiguration.LEFT_MOTOR_DIRECTION.getCoefficient()
+            val rightCoefficient = GBSBaseModuleConfiguration.RIGHT_MOTOR_DIRECTION.getCoefficient()
+
             autoDriveTimer.reset()
             state = GBSBaseModuleState.AUTO_DRIVE
             autoSpeed = speed
@@ -179,14 +184,14 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
             leftDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             rightDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
 
-            leftDrive.targetPosition = -(leftPower * WHEELS_INCHES_TO_TICKS).roundToInt()
-            rightDrive.targetPosition = -(rightPower * WHEELS_INCHES_TO_TICKS).roundToInt()
+            leftDrive.targetPosition = ((leftPower * WHEELS_INCHES_TO_TICKS) * leftCoefficient).roundToInt()
+            rightDrive.targetPosition = ((rightPower * WHEELS_INCHES_TO_TICKS) * rightCoefficient).roundToInt()
 
             leftDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
             rightDrive.mode = DcMotor.RunMode.RUN_TO_POSITION
 
-            leftDrive.power = abs(autoSpeed)
-            rightDrive.power = abs(autoSpeed)
+            leftDrive.power = abs(autoSpeed) * leftCoefficient
+            rightDrive.power = abs(autoSpeed) * rightCoefficient
             Result.success(false)
         } catch (e: Exception) {
             Result.failure(e)

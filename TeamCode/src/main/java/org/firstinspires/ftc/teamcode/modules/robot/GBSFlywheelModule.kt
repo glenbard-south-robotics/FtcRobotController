@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadID
 import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
+import org.firstinspires.ftc.teamcode.getCoefficient
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
 
@@ -77,8 +78,10 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext) :
             return Result.failure(GBSInvalidStateException("Cannot setMotorPower when autoVelocity is null!"))
         }
 
+        val directionCoefficient = GBSFlywheelModuleConfiguration.MOTOR_DIRECTION.getCoefficient()
+
         // This is safe since we checked if it was null above
-        val velocity = -requireNotNull(this.autoVelocity)
+        val velocity = directionCoefficient * requireNotNull(this.autoVelocity)
 
         setMotorVelocity(velocity)
         return Result.success(Unit)
@@ -95,10 +98,12 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext) :
         handleFlywheelToggle()
         handleSlowModeToggle()
 
-        val velocity = if (slowMode) {
-            -GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY
+        val directionCoefficient = GBSFlywheelModuleConfiguration.MOTOR_DIRECTION.getCoefficient()
+
+        val velocity = directionCoefficient * if (slowMode) {
+            GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY
         } else {
-            -GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
+            GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
         }
 
         val now = System.currentTimeMillis()
@@ -106,9 +111,7 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext) :
         // Rumble the gamepads when the flywheel is at its target speed and we haven't in the last 5 seconds
         if (abs(velocity - getVelocity()) <= GBSFlywheelModuleConfiguration.RUMBLE_ERROR_EPSILON && (now - lastRumbleMs) >= 5000) {
             opModeContext.inputManager.rumble(
-                250,
-                GBSGamepadID.GAMEPAD_ONE,
-                GBSGamepadID.GAMEPAD_TWO
+                250, GBSGamepadID.GAMEPAD_ONE, GBSGamepadID.GAMEPAD_TWO
             )
 
             lastRumbleMs = System.currentTimeMillis()
@@ -167,9 +170,11 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext) :
 
     @GBSTelemetryDebug(group = "Flywheel")
     fun targetVelocity(): Double {
+        val directionCoefficient = GBSFlywheelModuleConfiguration.MOTOR_DIRECTION.getCoefficient()
+
         return when (state) {
-            GBSFlywheelModuleState.AUTO -> autoVelocity ?: 0.0
-            GBSFlywheelModuleState.FORWARD -> if (slowMode) -GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY else -GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
+            GBSFlywheelModuleState.AUTO -> directionCoefficient * (autoVelocity ?: 0.0)
+            GBSFlywheelModuleState.FORWARD -> directionCoefficient * if (slowMode) GBSFlywheelModuleConfiguration.TELEOP_SLOW_VELOCITY else GBSFlywheelModuleConfiguration.TELEOP_VELOCITY
             else -> 0.0
         }
     }

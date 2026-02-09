@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.modules.actions
 
-import org.firstinspires.ftc.teamcode.GBSGamepadPair
+import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadPair
 import org.firstinspires.ftc.teamcode.config.modules.IGBSRobotModuleConfiguration
 
 data class GBSInputManager(val gamepadPair: GBSGamepadPair) {
