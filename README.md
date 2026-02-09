@@ -109,4 +109,4 @@ just release # Build and install release APK
 
 - [Kotlin Basics](https://kotlinlang.org/docs/home.html)
 - [FTC SDK Javadoc](https://javadoc.io/doc/org.firstinspires.ftc)
-- [gm0 Software]([https://gm0.org/en/latest/](https://gm0.org/en/latest/docs/software/index.html)) 
+- [gm0 Software](https://gm0.org/en/latest/docs/software/index.html)
