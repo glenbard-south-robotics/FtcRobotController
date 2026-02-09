@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
 import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
-import org.firstinspires.ftc.teamcode.modules.actions.read
-import org.firstinspires.ftc.teamcode.modules.actions.wasPressed
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -22,11 +20,8 @@ enum class GBSBaseModuleState {
 }
 
 @Suppress("unused")
-class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") :
-    GBSRobotModule(context, hardware) {
-
-    override val enableDebugTelemetry: Boolean = GBSBaseModuleConfiguration.DEBUG_TELEMETRY
-
+class GBSBaseModule(context: GBSModuleOpModeContext) :
+    GBSRobotModule(context, GBSBaseModuleConfiguration) {
     private var state: GBSBaseModuleState = GBSBaseModuleState.IDLE
     private var fineAdjustMode: Boolean = false
 
@@ -69,20 +64,10 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
         else GBSBaseModuleConfiguration.BASE_POWER_COEFFICIENT
 
     /**
-     * Read the configured analog value for the given action
-     * This resolves the binding in the configuration, so remaps apply automatically
-     */
-    private fun readConfiguredAnalog(action: GBSAnalogAction): Double =
-        action.read(opModeContext.inputManager, GBSBaseModuleConfiguration).toDouble()
-
-    /**
      * Toggle fine adjust using the configured binary binding
      */
     private fun handleFineAdjustToggle() {
-        if (GBSModuleActions.BASE_SLOW_TOGGLE.wasPressed(
-                opModeContext.inputManager, GBSBaseModuleConfiguration
-            )
-        ) {
+        if (readBinaryPressed(GBSModuleActions.BASE_SLOW_TOGGLE)) {
             fineAdjustMode = !fineAdjustMode
 
             opModeContext.inputManager.gamepadPair.gamepad1.rumble(250)
@@ -90,11 +75,10 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
     }
 
     private fun sticksOverThreshold(): Boolean {
-        val leftY = readConfiguredAnalog(GBSAnalogAction.LEFT_STICK_Y)
-        val rightY = readConfiguredAnalog(GBSAnalogAction.RIGHT_STICK_Y)
+        val leftY = readAnalog(GBSAnalogAction.LEFT_STICK_Y)
+        val rightY = readAnalog(GBSAnalogAction.RIGHT_STICK_Y)
         return leftY != 0.0 || rightY != 0.0
     }
-
 
     private fun handleIdleState(): Result<Unit> {
         if (sticksOverThreshold()) {
@@ -108,8 +92,8 @@ class GBSBaseModule(context: GBSModuleOpModeContext, hardware: String = "none") 
     }
 
     private fun handleManualState(): Result<Unit> {
-        val leftY = readConfiguredAnalog(GBSAnalogAction.LEFT_STICK_Y)
-        val rightY = readConfiguredAnalog(GBSAnalogAction.RIGHT_STICK_Y)
+        val leftY = readAnalog(GBSAnalogAction.LEFT_STICK_Y)
+        val rightY = readAnalog(GBSAnalogAction.RIGHT_STICK_Y)
 
         handleFineAdjustToggle()
 

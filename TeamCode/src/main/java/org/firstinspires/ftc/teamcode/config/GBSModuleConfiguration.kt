@@ -46,7 +46,14 @@ object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {
     override val SLOW_MODE_COEFFICIENT = 0.75
     override val REVERSE_COEFFICIENT = 0.5
 
-    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf()
+    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf(
+        GBSModuleActions.INTAKE_FORWARD to GBSBinaryBinding(GBSGamepadID.GAMEPAD_TWO,
+            GBSBinaryAction.LEFT_BUMPER),
+        GBSModuleActions.INTAKE_REVERSE to GBSBinaryBinding(GBSGamepadID.GAMEPAD_TWO,
+            GBSBinaryAction.RIGHT_BUMPER),
+        GBSModuleActions.INTAKE_SLOW_TOGGLE to GBSBinaryBinding(GBSGamepadID.GAMEPAD_TWO,
+            GBSBinaryAction.CROSS)
+    )
     override val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding> = mapOf()
 }
 
@@ -57,7 +64,13 @@ object GBSFlywheelModuleConfiguration : IGBSFlywheelModuleConfiguration {
     override val TELEOP_SLOW_VELOCITY = 2000.0
     override val RUMBLE_ERROR_EPSILON = 10.0
 
-    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf()
+    override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf(
+        GBSModuleActions.FLYWHEEL_TOGGLE to GBSBinaryBinding(
+            GBSGamepadID.GAMEPAD_TWO, GBSBinaryAction.TRIANGLE
+        ), GBSModuleActions.FLYWHEEL_TOGGLE_SLOW_MODE to GBSBinaryBinding(
+            GBSGamepadID.GAMEPAD_TWO, GBSBinaryAction.SQUARE
+        )
+    )
     override val ANALOG_BINDINGS: Map<GBSAnalogAction, GBSAnalogBinding> = mapOf()
 }
 

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.config.GBSIntakeModuleConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 
 enum class GBSIntakeModuleState {
@@ -11,9 +12,8 @@ enum class GBSIntakeModuleState {
 }
 
 @Suppress("unused")
-class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intakeMotor") :
-    GBSRobotModule(context, hardware) {
-    override val enableDebugTelemetry: Boolean = GBSIntakeModuleConfiguration.DEBUG_TELEMETRY
+class GBSIntakeModule(context: GBSModuleOpModeContext) :
+    GBSRobotModule(context, GBSIntakeModuleConfiguration) {
 
     private var state: GBSIntakeModuleState = GBSIntakeModuleState.IDLE
 
@@ -40,47 +40,36 @@ class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intak
         return Result.success(Unit)
     }
 
+    private fun handleInputs() {
+        if (readBinaryPressed(GBSModuleActions.INTAKE_FORWARD)) {
+            state = when (state) {
+                GBSIntakeModuleState.FORWARD -> GBSIntakeModuleState.IDLE
+                else -> GBSIntakeModuleState.FORWARD
+            }
+        }
+
+        if (readBinaryPressed(GBSModuleActions.INTAKE_REVERSE)) {
+            state = when (state) {
+                GBSIntakeModuleState.REVERSE -> GBSIntakeModuleState.IDLE
+                else -> GBSIntakeModuleState.REVERSE
+            }
+        }
+
+        slowMode = !readBinary(GBSModuleActions.INTAKE_SLOW_TOGGLE)
+    }
+
     private fun handleIdleState(): Result<Unit> {
-        val gamepad2 = opModeContext.gamepads.gamepad2
-
-        if (gamepad2.leftBumperWasPressed()) {
-            if (state == GBSIntakeModuleState.FORWARD) {
-                state = GBSIntakeModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            state = GBSIntakeModuleState.FORWARD
-            setMotorPower(0.0)
-        }
-
-        if (gamepad2.rightBumperWasPressed()) {
-            if (state == GBSIntakeModuleState.REVERSE) {
-                state = GBSIntakeModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            state = GBSIntakeModuleState.REVERSE
-            setMotorPower(0.0)
-        }
-
-        if (gamepad2.crossWasPressed()) {
-            slowMode = false
-        }
-
-        if (gamepad2.crossWasReleased()) {
-            slowMode = true
-        }
-
+        handleInputs()
         setMotorPower(0.0)
 
         return Result.success(Unit)
     }
 
     private fun handleRunningState(): Result<Unit> {
+        handleInputs()
 
         val coefficient: Double =
             if (state == GBSIntakeModuleState.FORWARD) GBSIntakeModuleConfiguration.FORWARD_COEFFICIENT else GBSIntakeModuleConfiguration.REVERSE_COEFFICIENT
-        val gamepad2 = opModeContext.gamepads.gamepad2
 
         val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
         val slowModeCoefficient =
@@ -89,33 +78,6 @@ class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intak
         val power =
             GBSIntakeModuleConfiguration.POWER * coefficient * modeCoefficient * slowModeCoefficient
 
-        if (gamepad2.leftBumperWasPressed()) {
-            if (state == GBSIntakeModuleState.FORWARD) {
-                state = GBSIntakeModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            state = GBSIntakeModuleState.FORWARD
-            setMotorPower(0.0)
-        }
-
-        if (gamepad2.rightBumperWasPressed()) {
-            if (state == GBSIntakeModuleState.REVERSE) {
-                state = GBSIntakeModuleState.IDLE
-                return Result.success(Unit)
-            }
-
-            state = GBSIntakeModuleState.REVERSE
-            setMotorPower(0.0)
-        }
-
-        if (gamepad2.crossWasPressed()) {
-            slowMode = false
-        }
-
-        if (gamepad2.crossWasReleased()) {
-            slowMode = true
-        }
 
         setMotorPower(power)
 
@@ -184,10 +146,9 @@ class GBSIntakeModule(context: GBSModuleOpModeContext, hardware: String = "intak
 
     @GBSTelemetryDebug(group = "Intake")
     fun targetPower(): Double {
-        val coefficient = if (state == GBSIntakeModuleState.FORWARD)
-            GBSIntakeModuleConfiguration.FORWARD_COEFFICIENT
-        else
-            GBSIntakeModuleConfiguration.REVERSE_COEFFICIENT
+        val coefficient =
+            if (state == GBSIntakeModuleState.FORWARD) GBSIntakeModuleConfiguration.FORWARD_COEFFICIENT
+            else GBSIntakeModuleConfiguration.REVERSE_COEFFICIENT
 
         val modeCoefficient = if (state == GBSIntakeModuleState.FORWARD) -1 else 1
         val slowCoefficient =

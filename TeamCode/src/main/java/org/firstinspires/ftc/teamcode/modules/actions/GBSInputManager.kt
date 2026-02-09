@@ -56,6 +56,27 @@ data class GBSInputManager(val gamepadPair: GBSGamepadPair) {
     }
 
     /**
+     * Read the value of a binary binding
+     */
+    fun readBinary(binding: GBSBinaryBinding): Boolean {
+        val gamepad = gamepadFor(binding.gamepad)
+        return when (binding.button) {
+            GBSBinaryAction.CROSS -> gamepad.cross
+            GBSBinaryAction.CIRCLE -> gamepad.circle
+            GBSBinaryAction.TRIANGLE -> gamepad.triangle
+            GBSBinaryAction.SQUARE -> gamepad.square
+            GBSBinaryAction.DPAD_UP -> gamepad.dpad_up
+            GBSBinaryAction.DPAD_DOWN -> gamepad.dpad_down
+            GBSBinaryAction.DPAD_LEFT -> gamepad.dpad_left
+            GBSBinaryAction.DPAD_RIGHT -> gamepad.dpad_right
+            GBSBinaryAction.LEFT_BUMPER -> gamepad.left_bumper
+            GBSBinaryAction.RIGHT_BUMPER -> gamepad.right_bumper
+            GBSBinaryAction.LEFT_STICK_BUTTON -> gamepad.left_stick_button
+            GBSBinaryAction.RIGHT_STICK_BUTTON -> gamepad.right_stick_button
+        }
+    }
+
+    /**
      * Read the value of an analog binding
      */
     fun readAnalog(binding: GBSAnalogBinding): Float {
@@ -78,6 +99,13 @@ fun GBSAnalogAction.read(
 ): Float {
     val binding = config.ANALOG_BINDINGS[this] ?: return 0f
     return inputManager.readAnalog(binding)
+}
+
+fun GBSModuleActions.read(
+    inputManager: GBSInputManager, config: IGBSRobotModuleConfiguration
+): Boolean {
+    val binding = config.BINARY_BINDINGS[this] ?: return false
+    return inputManager.readBinary(binding)
 }
 
 fun GBSModuleActions.wasPressed(

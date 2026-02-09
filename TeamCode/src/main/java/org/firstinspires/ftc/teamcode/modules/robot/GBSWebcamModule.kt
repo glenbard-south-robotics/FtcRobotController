@@ -4,7 +4,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl
 import org.firstinspires.ftc.teamcode.config.GBSWebcamModuleConfig
-import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
@@ -14,9 +13,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 import java.util.concurrent.TimeUnit
 
 @Suppress("unused")
-class GBSWebcamModule(context: GBSModuleOpModeContext, hardware: String) :
-    GBSRobotModule(context, hardware) {
-    override val enableDebugTelemetry: Boolean = GBSWebcamModuleConfig.DEBUG_TELEMETRY
+class GBSWebcamModule(context: GBSModuleOpModeContext, val hardware: String) :
+    GBSRobotModule(context, GBSWebcamModuleConfig) {
 
     private lateinit var visionPortal: VisionPortal
     private lateinit var aprilTagProcessor: AprilTagProcessor
@@ -26,10 +24,6 @@ class GBSWebcamModule(context: GBSModuleOpModeContext, hardware: String) :
 
     override fun initialize(): Result<Unit> {
         return try {
-            if (hardware == null) {
-                return Result.failure(GBSInvalidStateException("Cannot initialize a GBSWebcamModule with null hardware!"))
-            }
-
             aprilTagProcessor = AprilTagProcessor.Builder().build()
             aprilTagProcessor.setDecimation(decimation)
 
