@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.config.GBSFlywheelModuleConfiguration
 import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadID
 import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
@@ -104,8 +105,11 @@ class GBSFlywheelModule(context: GBSModuleOpModeContext) :
 
         // Rumble the gamepads when the flywheel is at its target speed and we haven't in the last 5 seconds
         if (abs(velocity - getVelocity()) <= GBSFlywheelModuleConfiguration.RUMBLE_ERROR_EPSILON && (now - lastRumbleMs) >= 5000) {
-            opModeContext.inputManager.gamepadPair.gamepad1.rumble(250)
-            opModeContext.inputManager.gamepadPair.gamepad2.rumble(250)
+            opModeContext.inputManager.rumble(
+                250,
+                GBSGamepadID.GAMEPAD_ONE,
+                GBSGamepadID.GAMEPAD_TWO
+            )
 
             lastRumbleMs = System.currentTimeMillis()
         }

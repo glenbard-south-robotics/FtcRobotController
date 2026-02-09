@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.exceptions.GBSInvalidStateException
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
 import org.firstinspires.ftc.teamcode.modules.actions.GBSAnalogAction
+import org.firstinspires.ftc.teamcode.modules.actions.GBSGamepadID
 import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 import kotlin.math.abs
@@ -70,7 +71,7 @@ class GBSBaseModule(context: GBSModuleOpModeContext) :
         if (readBinaryPressed(GBSModuleActions.BASE_SLOW_TOGGLE)) {
             fineAdjustMode = !fineAdjustMode
 
-            opModeContext.inputManager.gamepadPair.gamepad1.rumble(250)
+            opModeContext.inputManager.rumble(250, GBSGamepadID.GAMEPAD_ONE)
         }
     }
 

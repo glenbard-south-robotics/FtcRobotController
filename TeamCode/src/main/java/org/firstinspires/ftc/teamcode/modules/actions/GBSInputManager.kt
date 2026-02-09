@@ -92,6 +92,14 @@ data class GBSInputManager(val gamepadPair: GBSGamepadPair) {
         val v = raw.coerceIn(-1f, 1f)
         return if (kotlin.math.abs(v) < binding.deadZone) 0f else v * binding.scale
     }
+
+    fun rumble(durationMs: Int, vararg gamepads: GBSGamepadID) {
+        for (gamepadId in gamepads) {
+            val gamepad = gamepadFor(gamepadId)
+
+            gamepad.rumble(durationMs)
+        }
+    }
 }
 
 fun GBSAnalogAction.read(
