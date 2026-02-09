@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.modules.telemetry
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import kotlin.collections.iterator
 
 data class GBSTelemetry(
-    val telemetry: Telemetry,
-    val obj: Any,
-    val groupPrefix: String? = null
+    val telemetry: Telemetry, val obj: Any, val groupPrefix: String? = null
 )
 
 fun GBSTelemetry.addDebug() {
@@ -20,9 +17,7 @@ fun GBSTelemetry.addDebug() {
         val value = runCatching { field.get(obj) }.getOrNull()
         val group = groupPrefix?.let { "$it/${debug.group}" } ?: debug.group
 
-        groups
-            .getOrPut(group) { mutableListOf() }
-            .add(field.name to value)
+        groups.getOrPut(group) { mutableListOf() }.add(field.name to value)
     }
 
     for (method in GBSTelemetryReflectionCache.debugMethods(clazz)) {
@@ -33,9 +28,7 @@ fun GBSTelemetry.addDebug() {
         val value = runCatching { method.invoke(obj) }.getOrNull()
         val group = groupPrefix?.let { "$it/${debug.group}" } ?: debug.group
 
-        groups
-            .getOrPut(group) { mutableListOf() }
-            .add(method.name to value)
+        groups.getOrPut(group) { mutableListOf() }.add(method.name to value)
     }
 
     for ((group, entries) in groups) {

@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
 enum class GBSMotorDirection {
-    FORWARD,
-    REVERSE
+    FORWARD, REVERSE
 }
 
 fun GBSMotorDirection.getCoefficient(): Double {
