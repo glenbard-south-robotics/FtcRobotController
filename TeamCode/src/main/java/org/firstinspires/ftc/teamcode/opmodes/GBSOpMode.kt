@@ -16,7 +16,9 @@ abstract class GBSOpMode : LinearOpMode() {
     /**
      * Behaviors to run **during** while the opmode is active
      */
-    abstract fun run(): Result<Unit>
+    open fun runLoop(): Result<Unit> = Result.success(Unit)
+
+    abstract fun runLinear(): Result<Unit>
 
     /**
      * Behaviors to run **after** the stop button is pressed
@@ -88,10 +90,11 @@ abstract class GBSOpMode : LinearOpMode() {
         try {
             // Wait until the start button is pressed
             waitForStart()
+            runLinear().getOrElse { throw it }
 
             while (opModeIsActive()) {
                 runRegistryModules()
-                run().getOrElse { throw it }
+                runLoop().getOrElse { throw it }
 
                 this.telemetry.update()
                 idle()

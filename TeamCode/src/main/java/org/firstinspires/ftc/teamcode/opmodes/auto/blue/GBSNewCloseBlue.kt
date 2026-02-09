@@ -26,11 +26,10 @@ class GBSNewCloseBlue : GBSOpMode() {
         return Result.success(Unit)
     }
 
-    override fun run(): Result<Unit> {
+    override fun runLinear(): Result<Unit> {
         val base = this.getModule<GBSBaseModule>("base")
         val flywheel = this.getModule<GBSFlywheelModule>("flywheel")
         val intake = this.getModule<GBSIntakeModule>("intake")
-        val webcam2 = this.getModule<GBSWebcamModule>("webcam2")
 
         flywheel.autoFlywheelOn()
 
@@ -45,6 +44,13 @@ class GBSNewCloseBlue : GBSOpMode() {
                     intake.autoIntakeForward()
                 })
             })
+
+        return Result.success(Unit)
+    }
+
+    override fun runLoop(): Result<Unit> {
+        val base = this.getModule<GBSBaseModule>("base")
+        val webcam2 = this.getModule<GBSWebcamModule>("webcam2")
 
         if (webcam2.aprilTagDetections.isNotEmpty()) {
             val aprilTag = webcam2.aprilTagDetections.first()

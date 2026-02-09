@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.config
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.firstinspires.ftc.teamcode.config.auto.IGBSFire3Configuration
+import org.firstinspires.ftc.teamcode.config.auto.IGBSFire6Configuration
 
 // TODO: Test these values
 object GBSCloseBlueConfiguration : IGBSFire3Configuration {
@@ -34,6 +35,26 @@ object GBSFarBlueConfiguration : IGBSFire3Configuration {
     override val ERROR_EPSILON = 0.5
     override val ERROR_CORRECTION_SPEED = 0.25
     override val PID_K_P = 0.05
+}
+
+// TODO: Test these values
+object GBS6ArtifactCloseBlueConfiguration : IGBSFire6Configuration {
+    override val MOTOR_DISTANCES = Pair(0, -5)
+
+    override val FLYWHEEL_VELOCITY = 2500.0
+    override val SPINUP_MS = 3000L
+
+    override val BASE_POWER = 0.33
+
+    override val DESIRED_TAG_ORIENTATION =
+        YawPitchRollAngles(AngleUnit.DEGREES, 82.5, 86.8, 33.5, 10)
+    override val ERROR_EPSILON = 0.5
+    override val ERROR_CORRECTION_SPEED = 0.25
+    override val PID_K_P = 0.05
+
+    override val SPIKE_FORWARD_DISTANCE = 32
+    override val SPIKE_FORWARD_SPEED: Double = 0.25
+    override val SPIKE_MOTOR_DISTANCES: Pair<Int, Int> = Pair(19, 19)
 }
 
 // TODO: Test these values

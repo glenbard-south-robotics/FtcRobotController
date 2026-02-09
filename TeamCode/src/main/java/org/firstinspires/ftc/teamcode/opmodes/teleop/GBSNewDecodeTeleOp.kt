@@ -22,7 +22,11 @@ class GBSNewDecodeTeleOp : GBSOpMode() {
         return Result.success(Unit)
     }
 
-    override fun run(): Result<Unit> {
+    override fun runLinear(): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    override fun runLoop(): Result<Unit> {
         return Result.success(Unit)
     }
 
