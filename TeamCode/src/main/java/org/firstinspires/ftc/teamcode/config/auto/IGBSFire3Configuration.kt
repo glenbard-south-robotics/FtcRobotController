@@ -27,10 +27,6 @@ interface IGBSFire3Configuration {
      * The speed we should drive at
      */
     val BASE_POWER: Double
-    /**
-     * Speed of the intake after spin-up
-     */
-    val INTAKE_POWER: Double
 
     /**
      * What orientation do we want to see in the AprilTag

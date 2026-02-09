@@ -34,7 +34,7 @@ class GBSCloseBlue : LinearOpMode() {
             {
                 baseModule.autoDrive(GBSCloseBlueConfiguration.BASE_POWER, 12, -12, 5000, {
                     sleep(GBSCloseBlueConfiguration.SPINUP_MS)
-                    intakeModule.autoIntakeForward(GBSCloseBlueConfiguration.INTAKE_POWER)
+                    intakeModule.autoIntakeForward()
                 })
             })
 

@@ -47,10 +47,9 @@ object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {
 
     override val MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.REVERSE
 
-    override val POWER = 1.0
-    override val FORWARD_COEFFICIENT = 1.0
+    override val FORWARD_POWER = 1.0
+    override val REVERSE_POWER = 0.5
     override val SLOW_MODE_COEFFICIENT = 0.75
-    override val REVERSE_COEFFICIENT = 0.5
 
     override val BINARY_BINDINGS: Map<GBSModuleActions, GBSBinaryBinding> = mapOf(
         GBSModuleActions.INTAKE_FORWARD to GBSBinaryBinding(

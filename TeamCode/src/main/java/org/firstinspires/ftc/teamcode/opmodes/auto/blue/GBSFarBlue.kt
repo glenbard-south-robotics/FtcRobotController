@@ -38,7 +38,7 @@ class GBSFarBlue : LinearOpMode() {
             5000,
             {
                 sleep(GBSFarBlueConfiguration.SPINUP_MS)
-                intakeModule.autoIntakeForward(GBSFarBlueConfiguration.INTAKE_POWER)
+                intakeModule.autoIntakeForward()
             })
 
         while (opModeIsActive()) {

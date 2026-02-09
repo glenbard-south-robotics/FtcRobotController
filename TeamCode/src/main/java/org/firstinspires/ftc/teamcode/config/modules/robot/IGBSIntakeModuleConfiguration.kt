@@ -11,17 +11,14 @@ interface IGBSIntakeModuleConfiguration : IGBSRobotModuleConfiguration {
     val MOTOR_DIRECTION: GBSMotorDirection
 
     /**
-     * The power coefficient for the intake
+     * The power for forward mode
      */
-    val POWER: Double
+    val FORWARD_POWER: Double
     /**
-     * The multiplier for forward mode
+     * The power for reverse mode
      */
-    val FORWARD_COEFFICIENT: Double
-    /**
-     * The multiplier for reverse mode
-     */
-    val REVERSE_COEFFICIENT: Double
+    val REVERSE_POWER: Double
+
     /**
      * The multiplier for slow mode
      */

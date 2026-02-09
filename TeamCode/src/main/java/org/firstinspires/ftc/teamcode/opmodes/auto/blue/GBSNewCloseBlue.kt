@@ -42,7 +42,7 @@ class GBSNewCloseBlue : GBSOpMode() {
             {
                 base.autoDrive(GBSCloseBlueConfiguration.BASE_POWER, 12, -12, 5000, {
                     sleep(GBSCloseBlueConfiguration.SPINUP_MS)
-                    intake.autoIntakeForward(GBSCloseBlueConfiguration.INTAKE_POWER)
+                    intake.autoIntakeForward()
                 })
             })
 
