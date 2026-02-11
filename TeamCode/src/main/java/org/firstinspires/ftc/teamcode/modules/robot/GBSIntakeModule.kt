@@ -61,7 +61,9 @@ class GBSIntakeModule(context: GBSModuleOpModeContext) :
             }
         }
 
-        slowMode = !readBinary(GBSModuleActions.INTAKE_SLOW_TOGGLE)
+        if (readBinaryPressed(GBSModuleActions.INTAKE_SLOW_TOGGLE)) {
+            slowMode = !slowMode
+        }
     }
 
     private fun handleAutoState(): Result<Unit> {

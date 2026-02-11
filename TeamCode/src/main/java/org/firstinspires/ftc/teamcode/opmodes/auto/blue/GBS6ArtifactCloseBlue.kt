@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.config.GBS6ArtifactCloseBlueConfiguration
 import org.firstinspires.ftc.teamcode.modules.GBSModuleOpModeContext
 import org.firstinspires.ftc.teamcode.modules.robot.GBSBaseModule
@@ -13,6 +14,8 @@ import kotlin.math.abs
 @Suppress("unused")
 @Autonomous(name = "GBS6ArtifactCloseBlue", group = "Blue")
 class GBS6ArtifactCloseBlue() : GBSOpMode() {
+    val lineUpElapsedTime: ElapsedTime = ElapsedTime()
+
     override fun initialize(): Result<Unit> {
         val context = GBSModuleOpModeContext(this)
 
@@ -38,9 +41,9 @@ class GBS6ArtifactCloseBlue() : GBSOpMode() {
         val base = getModule<GBSBaseModule>("base")
         val webcam = getModule<GBSWebcamModule>("webcam2")
 
-        val startTime = System.currentTimeMillis()
+        lineUpElapsedTime.reset()
 
-        while (opModeIsActive() && System.currentTimeMillis() - startTime < timeoutMs) {
+        while (lineUpElapsedTime.milliseconds() <= timeoutMs) {
             if (webcam.aprilTagDetections.isEmpty()) {
                 base.autoPower(0.0, 0.0, 0.0)
                 sleep(10)
