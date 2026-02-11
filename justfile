@@ -1,4 +1,5 @@
-debug: build-debug deploy-debug
+launch: editor adb-connect
+dev: build-debug deploy-debug
 release: build-release deploy-release
 
 build-debug:
@@ -14,5 +15,8 @@ deploy-release:
 toolchains:
     gradle javaToolchains
 
-connect:
+editor:
+    android-studio &
+
+adb-connect:
     adb connect 192.168.43.1:5555
