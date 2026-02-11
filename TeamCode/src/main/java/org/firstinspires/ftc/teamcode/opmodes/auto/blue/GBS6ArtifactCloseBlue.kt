@@ -72,6 +72,7 @@ class GBS6ArtifactCloseBlue() : GBSOpMode() {
         val flywheel = getModule<GBSFlywheelModule>("flywheel")
         val intake = getModule<GBSIntakeModule>("intake")
 
+        flywheel.setAutoVelocity(GBS6ArtifactCloseBlueConfiguration.FLYWHEEL_VELOCITY)
         flywheel.autoFlywheelOn()
         sleep(GBS6ArtifactCloseBlueConfiguration.SPINUP_MS)
 

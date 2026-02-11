@@ -30,19 +30,19 @@ class GBSNewFarBlue : GBSOpMode() {
         val base = this.getModule<GBSBaseModule>("base")
         val flywheel = this.getModule<GBSFlywheelModule>("flywheel")
         val intake = this.getModule<GBSIntakeModule>("intake")
+
+        flywheel.setAutoVelocity(GBSFarBlueConfiguration.FLYWHEEL_VELOCITY)
         flywheel.autoFlywheelOn()
 
         base.autoDrive(
             GBSFarBlueConfiguration.BASE_POWER,
             GBSFarBlueConfiguration.MOTOR_DISTANCES.first,
             GBSFarBlueConfiguration.MOTOR_DISTANCES.second,
-            5000,
-            {
-                base.autoDrive(GBSFarBlueConfiguration.BASE_POWER, 12, -12, 5000, {
-                    sleep(GBSFarBlueConfiguration.SPINUP_MS)
-                    intake.autoIntakeForward()
-                })
-            })
+            5000, {
+                sleep(2000)
+                intake.autoIntakeForward()
+            }
+        )
 
         return Result.success(Unit)
     }

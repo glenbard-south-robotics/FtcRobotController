@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.modules.actions.GBSModuleActions
 object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
     override val DEBUG_TELEMETRY = true
 
-    override val LEFT_MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.REVERSE
-    override val RIGHT_MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.FORWARD
+    override val LEFT_MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.FORWARD
+    override val RIGHT_MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.REVERSE
 
     override val BASE_POWER_COEFFICIENT = 0.75
     override val FINE_ADJUST_POWER_COEFFICIENT = 0.33
@@ -45,9 +45,9 @@ object GBSBaseModuleConfiguration : IGBSBaseModuleConfiguration {
 object GBSIntakeModuleConfiguration : IGBSIntakeModuleConfiguration {
     override val DEBUG_TELEMETRY = true
 
-    override val MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.REVERSE
+    override val MOTOR_DIRECTION: GBSMotorDirection = GBSMotorDirection.FORWARD
 
-    override val FORWARD_POWER = 1.0
+    override val FORWARD_POWER = 0.675
     override val REVERSE_POWER = 0.5
     override val SLOW_MODE_COEFFICIENT = 0.75
 

@@ -31,7 +31,7 @@ object GBSFarBlueConfiguration : IGBSFire3Configuration {
     override val BASE_POWER = 0.33
 
     override val DESIRED_TAG_ORIENTATION =
-        YawPitchRollAngles(AngleUnit.DEGREES, 82.5, 86.8, 33.5, 10)
+        YawPitchRollAngles(AngleUnit.DEGREES, 80.5, 86.8, 33.5, 10)
     override val ERROR_EPSILON = 0.5
     override val ERROR_CORRECTION_SPEED = 0.25
     override val PID_K_P = 0.05
@@ -39,7 +39,7 @@ object GBSFarBlueConfiguration : IGBSFire3Configuration {
 
 // TODO: Test these values
 object GBS6ArtifactCloseBlueConfiguration : IGBSFire6Configuration {
-    override val MOTOR_DISTANCES = Pair(0, -5)
+    override val MOTOR_DISTANCES = Pair(48, 48)
 
     override val FLYWHEEL_VELOCITY = 2500.0
     override val SPINUP_MS = 3000L

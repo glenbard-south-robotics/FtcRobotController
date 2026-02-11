@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.modules.GBSRobotModule
+import org.firstinspires.ftc.teamcode.modules.telemetry.GBSTelemetryDebug
 
 abstract class GBSOpMode : LinearOpMode() {
     private val moduleRegistry: HashMap<String, GBSRobotModule> = HashMap()

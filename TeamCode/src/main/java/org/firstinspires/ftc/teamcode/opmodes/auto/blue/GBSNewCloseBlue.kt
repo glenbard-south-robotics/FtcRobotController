@@ -31,7 +31,10 @@ class GBSNewCloseBlue : GBSOpMode() {
         val flywheel = this.getModule<GBSFlywheelModule>("flywheel")
         val intake = this.getModule<GBSIntakeModule>("intake")
 
+        flywheel.setAutoVelocity(GBSCloseBlueConfiguration.FLYWHEEL_VELOCITY)
         flywheel.autoFlywheelOn()
+
+
 
         base.autoDrive(
             GBSCloseBlueConfiguration.BASE_POWER,
